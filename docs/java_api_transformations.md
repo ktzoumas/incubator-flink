@@ -446,7 +446,7 @@ public class PointWeighter
          implements FlatJoinFunction<Rating, Tuple2<String, Double>, Tuple2<String, Double>> {
 
   @Override
-  public void flatJoin(Rating rating, Tuple2<String, Double> weight,
+  public void join(Rating rating, Tuple2<String, Double> weight,
 	  Collector<Tuple2<String, Double>> out) {
 	if (weight.f1 > 0.1)
 		out.collect(new Tuple2<String, Double>(rating.name, rating.points * weight.f1));
