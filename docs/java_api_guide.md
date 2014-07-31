@@ -262,7 +262,7 @@ data.flatMap(new FlatMapFunction<String, String>() {
     <tr>
       <td><strong>Filter</strong></td>
       <td>
-        <p>Evaluates a boolean function for each element and retains those for which the function returns <i>true</i>.</p>
+        <p>Evaluates a boolean function for each element and retains those for which the function returns true.</p>
 {% highlight java %}
 data.filter(new FilterFunction<Integer>() {
   public boolean filter(Integer value) { return value > 1000; }
