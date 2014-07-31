@@ -31,7 +31,7 @@ public class WordCountExample {
     public static void main(String[] args) throws Exception {
         final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 
-        DataSet<text> text = env.fromElements(
+	    DataSet<text> text = env.fromElements(
             "Who's there?",
             "I think I hear them. Stand, ho! Who's there?");
 
@@ -1180,5 +1180,3 @@ The script to start the webinterface is located under ```bin/start-webclient.sh`
 You are able to specify program arguments in the textbox at the bottom of the page. Checking the plan visualization checkbox shows the execution plan before executing the actual program.
 
 [Back to top](#top)
-
-

@@ -447,6 +447,7 @@ public class PointWeighter
 
   @Override
   public void join(Rating rating, Tuple2<String, Double> weight,
+
 	  Collector<Tuple2<String, Double>> out) {
 	if (weight.f1 > 0.1)
 		out.collect(new Tuple2<String, Double>(rating.name, rating.points * weight.f1));
@@ -652,5 +653,3 @@ DataSet<Tuple2<String, Integer>> unioned = vals1.union(vals2)
 
 
 [Back to top](#top)
-
-
