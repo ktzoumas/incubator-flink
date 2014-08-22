@@ -72,8 +72,8 @@ public final class TupleLeadingFieldComparator<T extends Tuple, K> extends TypeC
 	}
 
 	@Override
-	public int compare(DataInputView firstSource, DataInputView secondSource) throws IOException {
-		return this.comparator.compare(firstSource, secondSource);
+	public int compareSerialized(DataInputView firstSource, DataInputView secondSource) throws IOException {
+		return this.comparator.compareSerialized(firstSource, secondSource);
 	}
 
 	@Override

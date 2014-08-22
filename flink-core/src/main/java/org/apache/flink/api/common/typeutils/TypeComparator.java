@@ -177,7 +177,7 @@ public abstract class TypeComparator<T> implements Serializable {
 	 * 
 	 *  @see java.util.Comparator#compare(Object, Object)
 	 */
-	public abstract int compare(DataInputView firstSource, DataInputView secondSource) throws IOException;
+	public abstract int compareSerialized(DataInputView firstSource, DataInputView secondSource) throws IOException;
 	
 	// --------------------------------------------------------------------------------------------
 	

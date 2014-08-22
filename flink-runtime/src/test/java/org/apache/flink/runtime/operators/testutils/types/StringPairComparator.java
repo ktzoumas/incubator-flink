@@ -58,7 +58,7 @@ public class StringPairComparator extends TypeComparator<StringPair> {
 	}
 
 	@Override
-	public int compare(DataInputView firstSource, DataInputView secondSource)
+	public int compareSerialized(DataInputView firstSource, DataInputView secondSource)
 			throws IOException {
 		return StringValue.readString(firstSource).compareTo(StringValue.readString(secondSource));
 	}

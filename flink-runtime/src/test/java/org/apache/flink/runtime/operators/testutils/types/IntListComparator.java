@@ -58,7 +58,7 @@ public class IntListComparator extends TypeComparator<IntList> {
 	}
 
 	@Override
-	public int compare(DataInputView source1, DataInputView source2) throws IOException {
+	public int compareSerialized(DataInputView source1, DataInputView source2) throws IOException {
 		return source1.readInt() - source2.readInt();
 	}
 

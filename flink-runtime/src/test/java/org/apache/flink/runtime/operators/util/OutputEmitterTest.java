@@ -402,7 +402,7 @@ public class OutputEmitterTest extends TestCase {
 		public int compare(Integer first, Integer second) { throw new UnsupportedOperationException(); }
 
 		@Override
-		public int compare(DataInputView firstSource, DataInputView secondSource) {
+		public int compareSerialized(DataInputView firstSource, DataInputView secondSource) {
 			throw new UnsupportedOperationException();
 		}
 

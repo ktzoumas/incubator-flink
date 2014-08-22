@@ -79,7 +79,7 @@ public class CopyableValueComparator<T extends CopyableValue<T> & Comparable<T>>
 	}
 	
 	@Override
-	public int compare(DataInputView firstSource, DataInputView secondSource) throws IOException {
+	public int compareSerialized(DataInputView firstSource, DataInputView secondSource) throws IOException {
 		if (tempReference == null) {
 			tempReference = InstantiationUtil.instantiate(type, CopyableValue.class);
 		}

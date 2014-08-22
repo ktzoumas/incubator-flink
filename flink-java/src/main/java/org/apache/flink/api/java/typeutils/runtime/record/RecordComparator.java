@@ -264,7 +264,7 @@ public final class RecordComparator extends TypeComparator<Record> {
 	}
 	
 	@Override
-	public int compare(DataInputView source1, DataInputView source2) throws IOException {
+	public int compareSerialized(DataInputView source1, DataInputView source2) throws IOException {
 		this.temp1.read(source1);
 		this.temp2.read(source2);
 		

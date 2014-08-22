@@ -100,7 +100,7 @@ public class GenericTypeComparator<T extends Comparable<T>> extends TypeComparat
 	}
 
 	@Override
-	public int compare(final DataInputView firstSource, final DataInputView secondSource) throws IOException {
+	public int compareSerialized(final DataInputView firstSource, final DataInputView secondSource) throws IOException {
 		if (this.serializer == null) {
 			this.serializer = this.serializerFactory.getSerializer();
 		}

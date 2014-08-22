@@ -83,7 +83,7 @@ public class ValueComparator<T extends Value & Comparable<T>> extends TypeCompar
 	}
 	
 	@Override
-	public int compare(DataInputView firstSource, DataInputView secondSource) throws IOException {
+	public int compareSerialized(DataInputView firstSource, DataInputView secondSource) throws IOException {
 		if (reference == null) {
 			reference = InstantiationUtil.instantiate(type, Value.class);
 		}

@@ -18,8 +18,6 @@
 
 package org.apache.flink.api.java.typeutils;
 
-import java.util.Arrays;
-
 import org.apache.flink.api.common.typeutils.TypeComparator;
 import org.apache.flink.api.common.typeutils.TypeSerializer;
 import org.apache.flink.api.java.typeutils.runtime.TupleComparator;
@@ -33,71 +31,21 @@ import org.apache.flink.api.java.tuple.*;
 //CHECKSTYLE.ON: AvoidStarImport
 
 
-public class TupleTypeInfo<T extends Tuple> extends TypeInformation<T> implements CompositeType<T> {
-	
-	private final TypeInformation<?>[] types;
-	
-	private final Class<T> tupleType;
-	
-	
+
+public final class TupleTypeInfo<T extends Tuple> extends TupleTypeInfoBase<T> {
+
+	@SuppressWarnings("unchecked")
 	public TupleTypeInfo(TypeInformation<?>... types) {
-		if (types == null || types.length == 0 || types.length > Tuple.MAX_ARITY) {
-			throw new IllegalArgumentException();
-		}
-
-		@SuppressWarnings("unchecked")
-		Class<T> typeClass = (Class<T>) CLASSES[types.length - 1];
-		
-		this.types = types;
-		this.tupleType = typeClass;
+		this((Class<T>) CLASSES[types.length - 1], types);
 	}
-	
+
 	public TupleTypeInfo(Class<T> tupleType, TypeInformation<?>... types) {
+		super(tupleType, types);
 		if (types == null || types.length == 0 || types.length > Tuple.MAX_ARITY) {
 			throw new IllegalArgumentException();
 		}
-		
-		this.tupleType = tupleType;
-		this.types = types;
-	}
-	
-	
-	@Override
-	public boolean isBasicType() {
-		return false;
 	}
 
-	@Override
-	public boolean isTupleType() {
-		return true;
-	}
-
-	@Override
-	public int getArity() {
-		return types.length;
-	}
-
-	@Override
-	public Class<T> getTypeClass() {
-		return tupleType;
-	}
-
-	
-	public <X> TypeInformation<X> getTypeAt(int pos) {
-		if (pos < 0 || pos >= this.types.length) {
-			throw new IndexOutOfBoundsException();
-		}
-
-		@SuppressWarnings("unchecked")
-		TypeInformation<X> typed = (TypeInformation<X>) this.types[pos];
-		return typed;
-	}
-	
-	@Override
-	public boolean isKeyType() {
-		return false;
-	}
-	
 	@Override
 	public TupleSerializer<T> createSerializer() {
 		TypeSerializer<?>[] fieldSerializers = new TypeSerializer<?>[getArity()];
@@ -156,39 +104,12 @@ public class TupleTypeInfo<T extends Tuple> extends TypeInformation<T> implement
 	}
 	
 	// --------------------------------------------------------------------------------------------
-	
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof TupleTypeInfo) {
-			@SuppressWarnings("unchecked")
-			TupleTypeInfo<T> other = (TupleTypeInfo<T>) obj;
-			return ((this.tupleType == null && other.tupleType == null) || this.tupleType.equals(other.tupleType)) &&
-					Arrays.deepEquals(this.types, other.types);
-			
-		} else {
-			return false;
-		}
-	}
-	
-	@Override
-	public int hashCode() {
-		return this.types.hashCode() ^ Arrays.deepHashCode(this.types);
-	}
-	
+
 	@Override
 	public String toString() {
-		StringBuilder bld = new StringBuilder("Tuple");
-		bld.append(types.length).append('<');
-		bld.append(types[0]);
-		
-		for (int i = 1; i < types.length; i++) {
-			bld.append(", ").append(types[i]);
-		}
-		
-		bld.append('>');
-		return bld.toString();
+		return "Java " + super.toString();
 	}
-	
+
 	// --------------------------------------------------------------------------------------------
 	
 	public static <X extends Tuple> TupleTypeInfo<X> getBasicTupleTypeInfo(Class<?>... basicTypes) {
@@ -227,7 +148,7 @@ public class TupleTypeInfo<T extends Tuple> extends TypeInformation<T> implement
 	// END_OF_TUPLE_DEPENDENT_CODE
 	
 	
-	private static final <T extends Tuple, K> TypeComparator<T> createLeadingFieldComparator(boolean ascending, TypeInformation<?> info) {
+	private static <T extends Tuple, K> TypeComparator<T> createLeadingFieldComparator(boolean ascending, TypeInformation<?> info) {
 		if (!(info.isKeyType() && info instanceof AtomicType)) {
 			throw new IllegalArgumentException("The field at position 0 (" + info + ") is no atomic key type.");
 		}

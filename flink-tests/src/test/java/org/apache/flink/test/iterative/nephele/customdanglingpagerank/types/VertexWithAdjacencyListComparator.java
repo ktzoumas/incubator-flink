@@ -61,7 +61,7 @@ public final class VertexWithAdjacencyListComparator extends TypeComparator<Vert
 	}
 
 	@Override
-	public int compare(DataInputView source1, DataInputView source2) throws IOException {
+	public int compareSerialized(DataInputView source1, DataInputView source2) throws IOException {
 		final long diff = source1.readLong() - source2.readLong();
 		return diff < 0 ? -1 : diff > 0 ? 1 : 0;
 	}
