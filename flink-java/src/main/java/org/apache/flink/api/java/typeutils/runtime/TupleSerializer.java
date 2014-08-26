@@ -19,7 +19,6 @@
 package org.apache.flink.api.java.typeutils.runtime;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import org.apache.flink.api.common.typeutils.TypeSerializer;
 import org.apache.flink.api.java.tuple.Tuple;
