@@ -22,51 +22,53 @@ import java.io.Serializable;
 
 import org.apache.flink.api.common.typeutils.TypeComparator;
 import org.apache.flink.api.common.typeutils.TypePairComparator;
-import org.apache.flink.api.java.tuple.Tuple;
 
 
-public class TuplePairComparator<T1 extends Tuple, T2 extends Tuple> extends TypePairComparator<T1, T2> implements Serializable {
+public class GenericPairComparator<T1, T2> extends TypePairComparator<T1, T2>
+		implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
-	private final int[] keyFields1, keyFields2;
+
+	private final TypeComparator<T1> comparator1;
+	private final TypeComparator<T2> comparator2;
+
 	private final TypeComparator<Object>[] comparators1;
 	private final TypeComparator<Object>[] comparators2;
-	
+
+	private final Comparable[] referenceKeyFields;
+
 	@SuppressWarnings("unchecked")
-	public TuplePairComparator(int[] keyFields1, int[] keyFields2, TypeComparator<Object>[] comparators1, TypeComparator<Object>[] comparators2) {
-		
-		if(keyFields1.length != keyFields2.length 
-			|| keyFields1.length != comparators1.length
-			|| keyFields2.length != comparators2.length) {
-			
+	public GenericPairComparator(TypeComparator<T1> comparator1, TypeComparator<T2> comparator2) {
+		this.comparator1 = comparator1;
+		this.comparator2 = comparator2;
+		this.comparators1 = comparator1.getComparators();
+		this.comparators2 = comparator2.getComparators();
+
+		if(comparators1.length != comparators2.length) {
 			throw new IllegalArgumentException("Number of key fields and comparators differ.");
 		}
-		
-		int numKeys = keyFields1.length;
-		
-		this.keyFields1 = keyFields1;
-		this.keyFields2 = keyFields2;
-		this.comparators1 = new TypeComparator[numKeys];
-		this.comparators2 = new TypeComparator[numKeys];
+
+		int numKeys = comparators1.length;
 		
 		for(int i = 0; i < numKeys; i++) {
 			this.comparators1[i] = comparators1[i].duplicate();
 			this.comparators2[i] = comparators2[i].duplicate();
 		}
+
+		this.referenceKeyFields = new Comparable[numKeys];
 	}
 	
 	@Override
 	public void setReference(T1 reference) {
-		for (int i = 0; i < this.comparators1.length; i++) {
-			this.comparators1[i].setReference(reference.getField(keyFields1[i]));
-		}
+		Comparable[] keys = comparator1.extractKeys(reference);
+		System.arraycopy(keys, 0, referenceKeyFields, 0, keys.length);
 	}
 
 	@Override
 	public boolean equalToReference(T2 candidate) {
+		Comparable[] keys = comparator2.extractKeys(candidate);
 		for (int i = 0; i < this.comparators1.length; i++) {
-			if (!this.comparators1[i].equalToReference(candidate.getField(keyFields2[i]))) {
+			if (this.comparators1[i].compare(referenceKeyFields[i], keys[i]) != 0) {
 				return false;
 			}
 		}
@@ -75,9 +77,11 @@ public class TuplePairComparator<T1 extends Tuple, T2 extends Tuple> extends Typ
 
 	@Override
 	public int compareToReference(T2 candidate) {
+		Comparable[] keys = comparator2.extractKeys(candidate);
 		for (int i = 0; i < this.comparators1.length; i++) {
-			this.comparators2[i].setReference(candidate.getField(keyFields2[i]));
-			int res = this.comparators1[i].compareToReference(this.comparators2[i]);
+			// We reverse ordering here because our "compareToReference" does work in a mirrored
+			// way compared to Comparable.compareTo
+			int res = this.comparators1[i].compare(keys[i], referenceKeyFields[i]);
 			if(res != 0) {
 				return res;
 			}

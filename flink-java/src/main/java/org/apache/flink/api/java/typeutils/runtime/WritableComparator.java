@@ -43,7 +43,11 @@ public class WritableComparator<T extends Writable & Comparable<T>> extends Type
 	private transient T tempReference;
 	
 	private transient Kryo kryo;
-	
+
+	private final Comparable[] extractedKey = new Comparable[1];
+
+	private final TypeComparator[] comparators = new TypeComparator[] {this};
+
 	public WritableComparator(boolean ascending, Class<T> type) {
 		this.type = type;
 		this.ascendingComparison = ascending;
@@ -122,6 +126,16 @@ public class WritableComparator<T extends Writable & Comparable<T>> extends Type
 	@Override
 	public TypeComparator<T> duplicate() {
 		return new WritableComparator<T>(ascendingComparison, type);
+	}
+
+	@Override
+	public Comparable[] extractKeys(T record) {
+		extractedKey[0] = record;
+		return extractedKey;
+	}
+
+	@Override public TypeComparator[] getComparators() {
+		return comparators;
 	}
 	
 	// --------------------------------------------------------------------------------------------

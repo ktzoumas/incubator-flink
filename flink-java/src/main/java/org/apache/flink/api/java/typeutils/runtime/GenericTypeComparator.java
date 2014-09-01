@@ -52,6 +52,10 @@ public class GenericTypeComparator<T extends Comparable<T>> extends TypeComparat
 
 	private transient Kryo kryo;
 
+	private final Comparable[] extractedKey = new Comparable[1];
+
+	private final TypeComparator[] comparators = new TypeComparator[] {this};
+
 	// ------------------------------------------------------------------------
 
 	public GenericTypeComparator(boolean ascending, TypeSerializer<T> serializer, Class<T> type) {
@@ -162,6 +166,17 @@ public class GenericTypeComparator<T extends Comparable<T>> extends TypeComparat
 			this.kryo.setAsmEnabled(true);
 			this.kryo.register(this.type);
 		}
+	}
+
+	@Override
+	public Comparable[] extractKeys(T record) {
+		extractedKey[0] = record;
+		return extractedKey;
+	}
+
+	@Override
+	public TypeComparator[] getComparators() {
+		return comparators;
 	}
 
 	// ------------------------------------------------------------------------

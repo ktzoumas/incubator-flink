@@ -21,6 +21,8 @@ package org.apache.flink.test.iterative.nephele.customdanglingpagerank.types;
 import java.io.IOException;
 
 import org.apache.flink.api.common.typeutils.TypeComparator;
+import org.apache.flink.api.common.typeutils.base.IntComparator;
+import org.apache.flink.api.common.typeutils.base.LongComparator;
 import org.apache.flink.core.memory.DataInputView;
 import org.apache.flink.core.memory.DataOutputView;
 import org.apache.flink.core.memory.MemorySegment;
@@ -30,7 +32,11 @@ public final class VertexWithAdjacencyListComparator extends TypeComparator<Vert
 	private static final long serialVersionUID = 1L;
 	
 	private long reference;
-	
+
+	private Comparable[] extractedKey = new Comparable[1];
+
+	private TypeComparator[] comparators = new TypeComparator[]{new LongComparator(true)};
+
 	@Override
 	public int hash(VertexWithAdjacencyList record) {
 		final long value = record.getVertexID();
@@ -128,5 +134,16 @@ public final class VertexWithAdjacencyListComparator extends TypeComparator<Vert
 	@Override
 	public VertexWithAdjacencyListComparator duplicate() {
 		return new VertexWithAdjacencyListComparator();
+	}
+
+	@Override
+	public Comparable[] extractKeys(VertexWithAdjacencyList record) {
+		extractedKey[0] = record.getVertexID();
+		return extractedKey;
+	}
+
+	@Override
+	public TypeComparator[] getComparators() {
+		return comparators;
 	}
 }

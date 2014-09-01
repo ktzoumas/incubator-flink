@@ -147,7 +147,7 @@ public abstract class TupleComparatorBase<T> extends TypeComparator<T> implement
 		return this.keyPositions;
 	}
 	
-	protected TypeComparator<Object>[] getComparators() {
+	public TypeComparator[] getComparators() {
 		return this.comparators;
 	}
 	

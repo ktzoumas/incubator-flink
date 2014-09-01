@@ -46,8 +46,11 @@ public class ValueComparator<T extends Value & Comparable<T>> extends TypeCompar
 	private transient T tempReference;
 	
 	private transient Kryo kryo;
-	
-	
+
+	private final Comparable[] extractedKey = new Comparable[1];
+
+	private final TypeComparator[] comparators = new TypeComparator[] {this};
+
 	public ValueComparator(boolean ascending, Class<T> type) {
 		this.type = type;
 		this.ascendingComparison = ascending;
@@ -139,6 +142,17 @@ public class ValueComparator<T extends Value & Comparable<T>> extends TypeCompar
 			this.kryo.setAsmEnabled(true);
 			this.kryo.register(type);
 		}
+	}
+
+	@Override
+	public Comparable[] extractKeys(T record) {
+		extractedKey[0] = record;
+		return extractedKey;
+	}
+
+	@Override
+	public TypeComparator[] getComparators() {
+		return comparators;
 	}
 	
 	// --------------------------------------------------------------------------------------------

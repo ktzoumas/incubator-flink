@@ -286,7 +286,21 @@ public abstract class TypeComparator<T> implements Serializable {
 	public abstract TypeComparator<T> duplicate();
 	
 	// --------------------------------------------------------------------------------------------
-	
+
+	/**
+	 * Extracts the key fields from a record. This is for use by the PairComparator to provide
+	 * interoperability between different record types.
+	 */
+	public abstract Comparable[] extractKeys(T record);
+
+	/**
+	 * Get the field comparators. This is used together with {@link #extractKeys(Object)} to provide
+	 * interoperability between different record types.
+	 */
+	public abstract TypeComparator[] getComparators();
+
+	// --------------------------------------------------------------------------------------------
+
 	@SuppressWarnings("rawtypes")
 	public int compareAgainstReference(Comparable[] keys) {
 		throw new UnsupportedOperationException("Workaround hack.");

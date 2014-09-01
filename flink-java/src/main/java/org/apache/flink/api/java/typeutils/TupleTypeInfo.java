@@ -21,7 +21,6 @@ package org.apache.flink.api.java.typeutils;
 import org.apache.flink.api.common.typeutils.TypeComparator;
 import org.apache.flink.api.common.typeutils.TypeSerializer;
 import org.apache.flink.api.java.typeutils.runtime.TupleComparator;
-import org.apache.flink.api.java.typeutils.runtime.TupleLeadingFieldComparator;
 import org.apache.flink.api.java.typeutils.runtime.TupleSerializer;
 import org.apache.flink.types.TypeInformation;
 
@@ -66,14 +65,7 @@ public final class TupleTypeInfo<T extends Tuple> extends TupleTypeInfoBase<T> {
 		{
 			throw new IllegalArgumentException();
 		}
-		
-		// special case for tuples where field zero is the key field
-		if (logicalKeyFields.length == 1 && logicalKeyFields[0] == 0) {
-			return createLeadingFieldComparator(orders[0], types[0]);
-		}
-		
-		// --- general case ---
-		
+
 		int maxKey = -1;
 		for (int key : logicalKeyFields){
 			maxKey = Math.max(key, maxKey);
@@ -146,15 +138,4 @@ public final class TupleTypeInfo<T extends Tuple> extends TupleTypeInfoBase<T> {
 		Tuple1.class, Tuple2.class, Tuple3.class, Tuple4.class, Tuple5.class, Tuple6.class, Tuple7.class, Tuple8.class, Tuple9.class, Tuple10.class, Tuple11.class, Tuple12.class, Tuple13.class, Tuple14.class, Tuple15.class, Tuple16.class, Tuple17.class, Tuple18.class, Tuple19.class, Tuple20.class, Tuple21.class, Tuple22.class, Tuple23.class, Tuple24.class, Tuple25.class
 	};
 	// END_OF_TUPLE_DEPENDENT_CODE
-	
-	
-	private static <T extends Tuple, K> TypeComparator<T> createLeadingFieldComparator(boolean ascending, TypeInformation<?> info) {
-		if (!(info.isKeyType() && info instanceof AtomicType)) {
-			throw new IllegalArgumentException("The field at position 0 (" + info + ") is no atomic key type.");
-		}
-		
-		@SuppressWarnings("unchecked")
-		AtomicType<K> typedInfo = (AtomicType<K>) info;
-		return new TupleLeadingFieldComparator<T, K>(typedInfo.createComparator(ascending));
-	}
 }

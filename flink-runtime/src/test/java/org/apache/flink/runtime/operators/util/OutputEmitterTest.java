@@ -27,6 +27,7 @@ import java.io.PipedOutputStream;
 
 import junit.framework.TestCase;
 
+import org.apache.flink.api.common.typeutils.base.IntComparator;
 import org.junit.Assert;
 import org.apache.flink.api.common.typeutils.TypeComparator;
 import org.apache.flink.api.common.typeutils.base.IntSerializer;
@@ -381,6 +382,9 @@ public class OutputEmitterTest extends TestCase {
 	
 	@SuppressWarnings("serial")
 	private static class TestIntComparator extends TypeComparator<Integer> {
+		private final Comparable[] extractedKey = new Comparable[1];
+
+		private TypeComparator[] comparators = new TypeComparator[]{new IntComparator(true)};
 
 		@Override
 		public int hash(Integer record) {
@@ -438,7 +442,17 @@ public class OutputEmitterTest extends TestCase {
 
 		@Override
 		public TypeComparator<Integer> duplicate() { throw new UnsupportedOperationException(); }
-		
+
+		@Override
+		public Comparable[] extractKeys(Integer record) {
+			extractedKey[0] = record;
+			return extractedKey;
+		}
+
+		@Override
+		public TypeComparator[] getComparators() {
+			return comparators;
+		}
 	}
 	
 //	@Test
