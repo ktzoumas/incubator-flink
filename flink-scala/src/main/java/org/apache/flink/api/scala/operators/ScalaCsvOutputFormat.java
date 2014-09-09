@@ -17,7 +17,7 @@
  */
 
 
-package org.apache.flink.api.scala;
+package org.apache.flink.api.scala.operators;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

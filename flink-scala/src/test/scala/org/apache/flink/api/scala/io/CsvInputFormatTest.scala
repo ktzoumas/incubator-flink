@@ -17,7 +17,7 @@
  */
 package org.apache.flink.api.scala.io
 
-import org.apache.flink.api.scala.ScalaCsvInputFormat
+import org.apache.flink.api.scala.operators.ScalaCsvInputFormat
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
@@ -35,7 +35,7 @@ import org.apache.log4j.Level
 import org.junit.Test
 import org.apache.flink.api.scala._
 
-class ScalaCsvInputFormatTest {
+class CsvInputFormatTest {
 
   LogUtils.initializeDefaultConsoleLogger(Level.WARN)
 

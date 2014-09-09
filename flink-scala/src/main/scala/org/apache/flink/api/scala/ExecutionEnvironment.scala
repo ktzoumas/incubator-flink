@@ -23,6 +23,7 @@ import org.apache.commons.lang3.Validate
 import org.apache.flink.api.common.JobExecutionResult
 import org.apache.flink.api.java.io._
 import org.apache.flink.api.java.typeutils.{TupleTypeInfoBase, BasicTypeInfo}
+import org.apache.flink.api.scala.operators.ScalaCsvInputFormat
 import org.apache.flink.core.fs.Path
 
 import org.apache.flink.api.java.{ExecutionEnvironment => JavaEnv}
@@ -197,7 +198,6 @@ class ExecutionEnvironment(javaEnv: JavaEnv) {
   def fromCollection[T: ClassTag : TypeInformation](
       data: Seq[T]): DataSet[T] = {
     Validate.notNull(data, "Data must not be null.")
-    Validate.isTrue(data.nonEmpty, "Data must not be empty.")
 
     val typeInfo = implicitly[TypeInformation[T]]
     CollectionInputFormat.checkCollection(data.asJavaCollection, typeInfo.getTypeClass)
@@ -218,7 +218,6 @@ class ExecutionEnvironment(javaEnv: JavaEnv) {
   def fromCollection[T: ClassTag : TypeInformation] (
     data: Iterator[T]): DataSet[T] = {
     Validate.notNull(data, "Data must not be null.")
-    Validate.isTrue(data.nonEmpty, "Data must not be empty.")
 
     val typeInfo = implicitly[TypeInformation[T]]
     val dataSource = new DataSource[T](
@@ -237,7 +236,6 @@ class ExecutionEnvironment(javaEnv: JavaEnv) {
    */
   def fromElements[T: ClassTag : TypeInformation](data: T*): DataSet[T] = {
     Validate.notNull(data, "Data must not be null.")
-    Validate.isTrue(data.nonEmpty, "Data must not be empty.")
     val typeInfo = implicitly[TypeInformation[T]]
     fromCollection(data)(implicitly[ClassTag[T]], typeInfo)
   }

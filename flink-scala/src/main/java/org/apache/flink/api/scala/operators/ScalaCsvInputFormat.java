@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.flink.api.scala;
+package org.apache.flink.api.scala.operators;
 
 
 import com.google.common.base.Preconditions;

@@ -18,6 +18,7 @@
 package org.apache.flink.api.scala
 
 import org.apache.flink.api.common.InvalidProgramException
+import org.apache.flink.api.scala.operators.ScalaAggregateOperator
 
 import scala.collection.JavaConverters._
 
