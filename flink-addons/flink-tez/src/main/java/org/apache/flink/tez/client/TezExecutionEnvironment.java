@@ -18,7 +18,6 @@
 
 package org.apache.flink.tez.client;
 
-import com.google.common.collect.Maps;
 import org.apache.flink.api.common.JobExecutionResult;
 import org.apache.flink.api.common.Plan;
 import org.apache.flink.api.java.ExecutionEnvironment;
@@ -27,7 +26,6 @@ import org.apache.flink.compiler.costs.DefaultCostEstimator;
 import org.apache.flink.compiler.plan.OptimizedPlan;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.tez.dag.TezDAGGenerator;
-import org.apache.flink.tez.util.EncodingUtils;
 import org.apache.tez.client.TezClient;
 import org.apache.tez.dag.api.DAG;
 import org.apache.tez.dag.api.TezConfiguration;
@@ -48,10 +46,7 @@ public class TezExecutionEnvironment extends ExecutionEnvironment{
 
 	private TezExecutionEnvironment(String confFile) {
 		if (confFile == null) {
-			this.tezConf = new TezConfiguration();
-			tezConf.setBoolean(TezConfiguration.TEZ_LOCAL_MODE, true);
-			tezConf.set("fs.defaultFS", "file:///");
-			tezConf.setBoolean(TezRuntimeConfiguration.TEZ_RUNTIME_OPTIMIZE_LOCAL_FETCH, true);
+			new TezExecutionEnvironment();
 		}
 		else {
 			this.tezConf = new TezConfiguration();
@@ -73,8 +68,6 @@ public class TezExecutionEnvironment extends ExecutionEnvironment{
 	@Override
 	public JobExecutionResult execute(String jobName) throws Exception {
 		try {
-
-
 			TezClient tezClient = TezClient.create(jobName, tezConf);
 
 			tezClient.start();

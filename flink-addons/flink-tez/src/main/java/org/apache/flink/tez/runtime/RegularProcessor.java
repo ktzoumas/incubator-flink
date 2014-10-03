@@ -65,7 +65,7 @@ public class RegularProcessor<S extends Function, OT> extends AbstractLogicalIOP
 		//Integer numberOfOutputSubTasks = (Integer) InstantiationUtil.readObjectFromConfig(conf.get("io.flink.processor.numberofoutputsubtasks"), getClass().getClassLoader());
 		//ChannelSelector<OT> channelSelector = (ChannelSelector<OT>) InstantiationUtil.readObjectFromConfig(conf.get("io.flink.processor.channelselector"), getClass().getClassLoader());
 
-		RuntimeUDFContext runtimeUdfContext = new RuntimeUDFContext(getContext().getTaskVertexName(), getContext().getVertexParallelism(), getContext().getTaskIndex());
+		RuntimeUDFContext runtimeUdfContext = new RuntimeUDFContext(getContext().getTaskVertexName(), getContext().getVertexParallelism(), getContext().getTaskIndex(), getClass().getClassLoader());
 
 		//this.task = new TaskContext<S, OT>(taskConfig, runtimeUdfContext, numberOfOutputSubTasks, channelSelector);
 		this.task = new TezTask<S, OT>(taskConfig, runtimeUdfContext, this.getContext().getTotalMemoryAvailableToTask());

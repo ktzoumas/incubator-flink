@@ -24,7 +24,9 @@ import org.apache.flink.api.common.io.InputFormat;
 import org.apache.flink.api.common.typeutils.TypeSerializer;
 import org.apache.flink.api.common.typeutils.TypeSerializerFactory;
 import org.apache.flink.compiler.CompilerException;
+import org.apache.flink.compiler.dag.BulkIterationNode;
 import org.apache.flink.compiler.dag.TempMode;
+import org.apache.flink.compiler.plan.BulkIterationPlanNode;
 import org.apache.flink.compiler.plan.Channel;
 import org.apache.flink.compiler.plan.DualInputPlanNode;
 import org.apache.flink.compiler.plan.NAryUnionPlanNode;
@@ -33,6 +35,7 @@ import org.apache.flink.compiler.plan.PlanNode;
 import org.apache.flink.compiler.plan.SingleInputPlanNode;
 import org.apache.flink.compiler.plan.SinkPlanNode;
 import org.apache.flink.compiler.plan.SourcePlanNode;
+import org.apache.flink.compiler.plan.WorksetIterationPlanNode;
 import org.apache.flink.configuration.ConfigConstants;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.runtime.operators.DriverStrategy;
@@ -104,6 +107,10 @@ public class TezDAGGenerator implements Visitor<PlanNode> {
 			// return false to prevent further descend
 			return false;
 		}
+
+        if ((node instanceof BulkIterationPlanNode) || (node instanceof WorksetIterationPlanNode)) {
+            throw new CompilerException("Iterations are not yet supported by the Tez execution environment");
+        }
 
 		FlinkVertex vertex = null;
 

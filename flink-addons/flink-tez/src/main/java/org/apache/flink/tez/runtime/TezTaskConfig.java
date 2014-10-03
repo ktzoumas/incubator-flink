@@ -62,7 +62,7 @@ public class TezTaskConfig extends TaskConfig {
 	public ArrayList<Integer> getNumberSubtasksInOutput() {
 		ArrayList<Integer> numberOfSubTasksInOutputs = null;
 		try {
-			numberOfSubTasksInOutputs = (ArrayList) InstantiationUtil.readObjectFromConfig(this.config, NUMBER_SUBTASKS_IN_OUTPUTS, getConfiguration().getClassLoader());
+			numberOfSubTasksInOutputs = (ArrayList) InstantiationUtil.readObjectFromConfig(this.config, NUMBER_SUBTASKS_IN_OUTPUTS, getClass().getClassLoader());
 		}
 		catch (IOException e) {
 			throw new RuntimeException("Error while reading the number of subtasks in outputs object from the task configuration.");
@@ -89,7 +89,7 @@ public class TezTaskConfig extends TaskConfig {
 	public InputSplitProvider getInputSplitProvider () {
 		InputSplitProvider inputSplitProvider = null;
 		try {
-			inputSplitProvider = (InputSplitProvider) InstantiationUtil.readObjectFromConfig(this.config, INPUT_SPLIT_PROVIDER, getConfiguration().getClassLoader());
+			inputSplitProvider = (InputSplitProvider) InstantiationUtil.readObjectFromConfig(this.config, INPUT_SPLIT_PROVIDER, getClass().getClassLoader());
 		}
 		catch (IOException e) {
 			throw new RuntimeException("Error while reading the input split provider object from the task configuration.");
@@ -115,7 +115,7 @@ public class TezTaskConfig extends TaskConfig {
 	public HashMap<String,ArrayList<Integer>> getInputPositions () {
 		HashMap<String,ArrayList<Integer>> inputPositions = null;
 		try {
-			inputPositions = (HashMap) InstantiationUtil.readObjectFromConfig(this.config, INPUT_POSITIONS, getConfiguration().getClassLoader());
+			inputPositions = (HashMap) InstantiationUtil.readObjectFromConfig(this.config, INPUT_POSITIONS, getClass().getClassLoader());
 		}
 		catch (IOException e) {
 			throw new RuntimeException("Error while reading the input positions object from the task configuration.");

@@ -29,10 +29,13 @@ public class EncodingUtils {
 		if (encoded == null) {
 			return null;
 		}
-        // Using Apache Commons
-        Base64 base = new Base64();
-        byte [] bytes = base.decode(encoded);
-        return InstantiationUtil.deserializeObject(bytes, cl);
+		// Using Apache Commons
+		//Base64 base = new Base64();
+		//byte [] bytes = base.decode(encoded);
+
+		byte [] bytes = Base64.decodeBase64(encoded);
+
+		return InstantiationUtil.deserializeObject(bytes, cl);
 
 		// //byte [] bytes = BaseEncoding.base64().decode(encoded);
 		//Base64.Decoder decoder = Base64.getDecoder();
@@ -45,8 +48,12 @@ public class EncodingUtils {
 		// //String encoded = BaseEncoding.base64().encode(bytes);
 		//Base64.Encoder encoder = Base64.getEncoder();
 		//String encoded = encoder.encodeToString(bytes);
-        Base64 base = new Base64();
-        String encoded = base.encodeToString(bytes);
+
+		//Base64 base = new Base64();
+		//String encoded = base.encodeToString(bytes);
+
+		String encoded = Base64.encodeBase64String(bytes);
 		return encoded;
+
 	}
 }
