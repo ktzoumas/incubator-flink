@@ -19,9 +19,9 @@
 package org.apache.flink.tez.util;
 
 import org.apache.flink.util.InstantiationUtil;
+import org.apache.commons.codec.binary.Base64;
 
 import java.io.IOException;
-import java.util.Base64;
 
 public class EncodingUtils {
 
@@ -29,17 +29,24 @@ public class EncodingUtils {
 		if (encoded == null) {
 			return null;
 		}
-		//byte [] bytes = BaseEncoding.base64().decode(encoded);
-		Base64.Decoder decoder = Base64.getDecoder();
-		byte [] bytes = decoder.decode(encoded);
-		return InstantiationUtil.deserializeObject(bytes, cl);
+        // Using Apache Commons
+        Base64 base = new Base64();
+        byte [] bytes = base.decode(encoded);
+        return InstantiationUtil.deserializeObject(bytes, cl);
+
+		// //byte [] bytes = BaseEncoding.base64().decode(encoded);
+		//Base64.Decoder decoder = Base64.getDecoder();
+		//byte [] bytes = decoder.decode(encoded);
+		//return InstantiationUtil.deserializeObject(bytes, cl);
 	}
 
 	public static String encodeObjectToString(Object o) throws IOException {
 		byte[] bytes = InstantiationUtil.serializeObject(o);
-		//String encoded = BaseEncoding.base64().encode(bytes);
-		Base64.Encoder encoder = Base64.getEncoder();
-		String encoded = encoder.encodeToString(bytes);
+		// //String encoded = BaseEncoding.base64().encode(bytes);
+		//Base64.Encoder encoder = Base64.getEncoder();
+		//String encoded = encoder.encodeToString(bytes);
+        Base64 base = new Base64();
+        String encoded = base.encodeToString(bytes);
 		return encoded;
 	}
 }

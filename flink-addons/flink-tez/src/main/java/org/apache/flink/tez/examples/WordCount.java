@@ -30,10 +30,9 @@ import org.apache.flink.util.Collector;
 public  class WordCount {
 
 	public static String INPUT_FILE="/tmp/sherlock.txt";
-	public static String OUTPUT_FILE="/tmp/wordcount_output6";
+	public static String OUTPUT_FILE="/tmp/wordcount_output7";
 
 	public static void main (String [] args) throws Exception {
-
 		ExecutionEnvironment env = TezExecutionEnvironment.create();
 		env.setDegreeOfParallelism(4);
 

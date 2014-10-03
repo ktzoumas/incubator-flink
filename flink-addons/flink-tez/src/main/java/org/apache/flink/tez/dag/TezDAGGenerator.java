@@ -52,7 +52,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletionException;
+
 
 public class TezDAGGenerator implements Visitor<PlanNode> {
 
@@ -245,7 +245,7 @@ public class TezDAGGenerator implements Visitor<PlanNode> {
 		return new FlinkDataSourceVertex(taskName, dop, config);
 	}
 
-	private FlinkVertex createUnionVertex(NAryUnionPlanNode node) throws CompletionException, IOException {
+	private FlinkVertex createUnionVertex(NAryUnionPlanNode node) throws CompilerException, IOException {
 		final String taskName = node.getNodeName();
 		final int dop = node.getDegreeOfParallelism();
 		final TezTaskConfig config= new TezTaskConfig(new Configuration());
