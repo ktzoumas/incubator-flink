@@ -112,6 +112,10 @@ public class TezDAGGenerator implements Visitor<PlanNode> {
             throw new CompilerException("Iterations are not yet supported by the Tez execution environment");
         }
 
+        if ( (node.getBroadcastInputs() != null) && (!node.getBroadcastInputs().isEmpty())) {
+            throw new CompilerException("Broadcast inputs are not yet supported by the Tez execution environment");
+        }
+
 		FlinkVertex vertex = null;
 
 		try {
