@@ -26,8 +26,8 @@ under the License.
     <parent>
         <artifactId>flink-addons</artifactId>
         <groupId>org.apache.flink</groupId>
-        <version>0.7-incubating-SNAPSHOT</version>
-        <relativePath>..</relativePath>
+        <version>0.7-hadoop2-incubating-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>flink-tez</artifactId>
@@ -36,6 +36,7 @@ under the License.
     <packaging>jar</packaging>
 
     <dependencies>
+
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-java</artifactId>
@@ -97,6 +98,7 @@ under the License.
             <version>11.0.2</version>
             <scope>compile</scope>
         </dependency>
+
 
     </dependencies>
 </project>

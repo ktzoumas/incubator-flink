@@ -25,8 +25,8 @@ under the License.
 	<parent>
 		<groupId>org.apache.flink</groupId>
 		<artifactId>flink-parent</artifactId>
-		<version>0.7-incubating-SNAPSHOT</version>
-		<relativePath>..</relativePath>
+		<version>0.7-hadoop2-incubating-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<artifactId>flink-addons</artifactId>
@@ -34,12 +34,12 @@ under the License.
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>flink-avro</module>
-		<module>flink-jdbc</module>
-		<module>flink-spargel</module>
-		<module>flink-hadoop-compatibility</module>
-		<module>flink-streaming</module>
-        <module>flink-tez</module>
+		<module>flink-avro/pom.xml</module>
+		<module>flink-jdbc/pom.xml</module>
+		<module>flink-spargel/pom.xml</module>
+		<module>flink-hadoop-compatibility/pom.xml</module>
+		<module>flink-streaming/pom.xml</module>
+        <module>flink-tez/pom.xml</module>
     </modules>
 	
 	<!-- See main pom.xml for explanation of profiles -->
@@ -49,7 +49,7 @@ under the License.
 			<activation>
 				<property>
 					<!-- Please do not remove the 'hadoop1' comment. See ./tools/generate_specific_pom.sh -->
-					<!--hadoop1--><name>!hadoop.profile</name>
+					<name>hadoop.profile</name><value>1</value>
 				</property>
 			</activation>
 			<modules>
@@ -61,11 +61,11 @@ under the License.
 			<activation>
 				<property>
 					<!-- Please do not remove the 'hadoop1' comment. See ./tools/generate_specific_pom.sh -->
-					<!--hadoop2--><name>hadoop.profile</name><value>2</value>
+					<name>!hadoop.profile</name>
 				</property>
 			</activation>
 			<modules>
-				<module>flink-hbase</module>
+				<module>flink-hbase/pom.xml</module>
 			</modules>
 		</profile>
 		<profile>
@@ -73,11 +73,11 @@ under the License.
 			<activation>
 				<property>
 					<!-- Please do not remove the 'hadoop1' comment. See ./tools/generate_specific_pom.sh -->
-					<!--hadoop2--><name>hadoop.profile</name><value>2</value>
+					<name>!hadoop.profile</name>
 				</property>
 			</activation>
 			<modules>
-				<module>flink-yarn</module>
+				<module>flink-yarn/pom.xml</module>
 			</modules>
 		</profile>
 	</profiles>
