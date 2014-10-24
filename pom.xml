@@ -30,7 +30,7 @@ under the License.
 
 	<groupId>org.apache.flink</groupId>
 	<artifactId>flink-parent</artifactId>
-	<version>0.7-incubating-SNAPSHOT</version>
+	<version>0.7-hadoop2-incubating-SNAPSHOT</version>
 
 	<name>flink</name>
 	<packaging>pom</packaging>
@@ -145,6 +145,7 @@ under the License.
 			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
+
 	</dependencies>
 	
 	<!-- this section defines the module versions that are used if nothing else is specified. -->
@@ -221,7 +222,7 @@ under the License.
 			<activation>
 				<property>
 					<!-- Please do not remove the 'hadoop1' comment. See ./tools/generate_specific_pom.sh -->
-					<!--hadoop1--><name>!hadoop.profile</name>
+					<name>hadoop.profile</name><value>1</value>
 				</property>
 			</activation>
 			<properties>
@@ -243,7 +244,7 @@ under the License.
 			<activation>
 				<property>
 					<!-- Please do not remove the 'hadoop1' comment. See ./tools/generate_specific_pom.sh -->
-					<!--hadoop2--><name>hadoop.profile</name><value>2</value>
+					<name>!hadoop.profile</name>
 				</property>
 			</activation>
 			<properties>
@@ -482,8 +483,8 @@ under the License.
 					</artifactSet>
 					<relocations>
 						<relocation>
-							<pattern>com.google</pattern>
-							<shadedPattern>org.apache.flink.shaded.com.google</shadedPattern>
+							<pattern>com.google.common</pattern>
+							<shadedPattern>org.apache.flink.shaded.com.google.common</shadedPattern>
 						</relocation>
 					</relocations>
 				</configuration>

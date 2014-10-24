@@ -28,9 +28,9 @@
 		<dependencySet>
 			<outputDirectory>/</outputDirectory>
 			<useProjectArtifact>true</useProjectArtifact>
-			<excludes>
+			<!--<excludes>
 				<exclude>org.apache.flink:*</exclude>
-			</excludes>
+			</excludes>-->
 			<useTransitiveFiltering>true</useTransitiveFiltering>
 			<unpack>true</unpack>
 			<scope>runtime</scope>
