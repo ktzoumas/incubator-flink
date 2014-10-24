@@ -96,7 +96,7 @@ public class DataSourceProcessor<OT> extends AbstractLogicalIOProcessor {
 	@Override
 	public void run(Map<String, LogicalInput> inputs, Map<String, LogicalOutput> outputs) throws Exception {
 
-		Preconditions.checkArgument((inputs == null) || (inputs.size() == 0));
+		//Preconditions.checkArgument((inputs == null) || (inputs.size() == 0));
 
 		// Initialize inputs, get readers and writers
 		this.outputs = outputs;
@@ -144,24 +144,6 @@ public class DataSourceProcessor<OT> extends AbstractLogicalIOProcessor {
 				}
 				collector = new TezOutputCollector<OT>(writers, channelSelectors, serializerFactory.getSerializer(), numStreamsInOutputs);
 
-				/*
-				ChannelSelector<OT> channelSelector = null;
-				final ShipStrategyType strategy = config.getOutputShipStrategy(0);
-				final TypeComparatorFactory<OT> compFactory = config.getOutputComparator(0, this.userCodeClassLoader);
-				final DataDistribution dataDist = config.getOutputDataDistribution(0, this.userCodeClassLoader);
-				if (compFactory == null) {
-					channelSelector = new OutputEmitter<OT>(strategy);
-				} else if (dataDist == null){
-					final TypeComparator<OT> comparator = compFactory.createComparator();
-					channelSelector = new OutputEmitter<OT>(strategy, comparator);
-				} else {
-					final TypeComparator<OT> comparator = compFactory.createComparator();
-					channelSelector = new OutputEmitter<OT>(strategy, comparator, dataDist);
-				}
-				int numberOfOutputStreams = config.getNumberSubtasksInOutput();
-
-				collector = new TezOutputCollector<OT>(writers.get(0), channelSelector, serializerFactory.getSerializer(), numberOfOutputStreams);
-				*/
 				while (!format.reachedEnd()) {
 					// build next pair and ship pair if it is valid
 					if ((record = format.nextRecord(record)) != null) {

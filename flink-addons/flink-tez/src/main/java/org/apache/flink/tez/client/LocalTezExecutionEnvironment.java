@@ -21,7 +21,6 @@ package org.apache.flink.tez.client;
 import org.apache.flink.api.common.JobExecutionResult;
 import org.apache.flink.api.common.Plan;
 import org.apache.flink.api.java.ExecutionEnvironment;
-import org.apache.flink.api.java.LocalEnvironment;
 import org.apache.flink.compiler.PactCompiler;
 import org.apache.flink.compiler.costs.DefaultCostEstimator;
 import org.apache.flink.compiler.plan.OptimizedPlan;
@@ -34,36 +33,19 @@ import org.apache.tez.dag.api.client.DAGClient;
 import org.apache.tez.dag.api.client.DAGStatus;
 import org.apache.tez.runtime.library.api.TezRuntimeConfiguration;
 
-public class TezExecutionEnvironment extends ExecutionEnvironment{
+public class LocalTezExecutionEnvironment extends ExecutionEnvironment{
 
 	TezConfiguration tezConf;
 
-	private TezExecutionEnvironment() {
+	private LocalTezExecutionEnvironment() {
 		this.tezConf = new TezConfiguration();
 		tezConf.setBoolean(TezConfiguration.TEZ_LOCAL_MODE, true);
 		tezConf.set("fs.defaultFS", "file:///");
 		tezConf.setBoolean(TezRuntimeConfiguration.TEZ_RUNTIME_OPTIMIZE_LOCAL_FETCH, true);
 	}
 
-	private TezExecutionEnvironment(String confFile) {
-		if (confFile == null) {
-			new TezExecutionEnvironment();
-		}
-		else {
-			this.tezConf = new TezConfiguration();
-			tezConf.set(TezConfiguration.TEZ_SITE_XML, confFile);
-			tezConf.setBoolean(TezConfiguration.TEZ_LOCAL_MODE, false);
-			tezConf.set("fs.default.name", "hdfs://localhost:9000");
-			tezConf.set("tez.lib.uris", "${fs.default.name}/apps/tez-0.6.0-SNAPSHOT/tez-0.6.0-SNAPSHOT.tar.gz");
-		}
-	}
-
-	public static TezExecutionEnvironment create() {
-		return new TezExecutionEnvironment();
-	}
-
-	public static TezExecutionEnvironment create(String confFile) {
-		return new TezExecutionEnvironment(confFile);
+	public static LocalTezExecutionEnvironment create() {
+		return new LocalTezExecutionEnvironment();
 	}
 
 	@Override
@@ -115,6 +97,8 @@ public class TezExecutionEnvironment extends ExecutionEnvironment{
 		return null;
 	}
 
-
+    public void setAsContext() {
+        initializeContextEnvironment(this);
+    }
 
 }

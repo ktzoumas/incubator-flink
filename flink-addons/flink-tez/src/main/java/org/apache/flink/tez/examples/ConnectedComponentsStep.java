@@ -30,7 +30,7 @@ import org.apache.flink.api.java.functions.FunctionAnnotation;
 import org.apache.flink.api.java.tuple.Tuple1;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.examples.java.graph.util.ConnectedComponentsData;
-import org.apache.flink.tez.client.TezExecutionEnvironment;
+import org.apache.flink.tez.client.LocalTezExecutionEnvironment;
 import org.apache.flink.util.Collector;
 
 
@@ -47,7 +47,7 @@ public class ConnectedComponentsStep implements ProgramDescription {
 		}
 
 		// set up execution environment
-		ExecutionEnvironment env = TezExecutionEnvironment.create();
+		ExecutionEnvironment env = LocalTezExecutionEnvironment.create();
 
 		// read vertex and edge data
 		DataSet<Long> vertices = getVertexDataSet(env);

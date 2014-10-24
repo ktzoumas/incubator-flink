@@ -23,7 +23,8 @@ import org.apache.flink.api.java.DataSet;
 import org.apache.flink.api.java.ExecutionEnvironment;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.examples.java.wordcount.util.WordCountData;
-import org.apache.flink.tez.client.TezExecutionEnvironment;
+import org.apache.flink.tez.client.LocalTezExecutionEnvironment;
+import org.apache.flink.tez.client.RemoteTezExecutionEnvironment;
 import org.apache.flink.util.Collector;
 
 
@@ -41,7 +42,7 @@ public class WordCount {
         }
 
         // set up the execution environment
-        final ExecutionEnvironment env = TezExecutionEnvironment.create();
+        final ExecutionEnvironment env = LocalTezExecutionEnvironment.create();
 
         // get input data
         DataSet<String> text = getTextDataSet(env);

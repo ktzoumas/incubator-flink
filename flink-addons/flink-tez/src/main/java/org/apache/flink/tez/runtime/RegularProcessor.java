@@ -19,6 +19,7 @@
 package org.apache.flink.tez.runtime;
 
 import org.apache.flink.api.common.functions.Function;
+import org.apache.flink.core.fs.Path;
 import org.apache.flink.runtime.operators.PactDriver;
 import org.apache.flink.runtime.operators.udf.RuntimeUDFContext;
 import org.apache.flink.tez.util.EncodingUtils;
@@ -38,6 +39,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.FutureTask;
 
 
 public class RegularProcessor<S extends Function, OT> extends AbstractLogicalIOProcessor {
@@ -65,7 +67,11 @@ public class RegularProcessor<S extends Function, OT> extends AbstractLogicalIOP
 		//Integer numberOfOutputSubTasks = (Integer) InstantiationUtil.readObjectFromConfig(conf.get("io.flink.processor.numberofoutputsubtasks"), getClass().getClassLoader());
 		//ChannelSelector<OT> channelSelector = (ChannelSelector<OT>) InstantiationUtil.readObjectFromConfig(conf.get("io.flink.processor.channelselector"), getClass().getClassLoader());
 
-		RuntimeUDFContext runtimeUdfContext = new RuntimeUDFContext(getContext().getTaskVertexName(), getContext().getVertexParallelism(), getContext().getTaskIndex(), getClass().getClassLoader());
+		RuntimeUDFContext runtimeUdfContext = new RuntimeUDFContext(getContext().getTaskVertexName(),
+                getContext().getVertexParallelism(),
+                getContext().getTaskIndex(),
+                getClass().getClassLoader());
+                //new HashMap<String, FutureTask<Path>>());
 
 		//this.task = new TaskContext<S, OT>(taskConfig, runtimeUdfContext, numberOfOutputSubTasks, channelSelector);
 		this.task = new TezTask<S, OT>(taskConfig, runtimeUdfContext, this.getContext().getTotalMemoryAvailableToTask());

@@ -29,7 +29,7 @@ import org.apache.flink.api.java.functions.FunctionAnnotation;
 import org.apache.flink.api.java.tuple.Tuple1;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.examples.java.graph.util.PageRankData;
-import org.apache.flink.tez.client.TezExecutionEnvironment;
+import org.apache.flink.tez.client.LocalTezExecutionEnvironment;
 import org.apache.flink.util.Collector;
 
 import java.util.ArrayList;
@@ -52,7 +52,7 @@ public class PageRankBasicStep {
 		}
 
 		// set up execution environment
-		final ExecutionEnvironment env = TezExecutionEnvironment.create();
+		final ExecutionEnvironment env = LocalTezExecutionEnvironment.create();
 
 		// get input data
 		DataSet<Long> pagesInput = getPagesDataSet(env);

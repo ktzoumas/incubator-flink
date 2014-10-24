@@ -25,7 +25,7 @@ import org.apache.flink.api.java.DataSet;
 import org.apache.flink.api.java.ExecutionEnvironment;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.examples.java.graph.util.ConnectedComponentsData;
-import org.apache.flink.tez.client.TezExecutionEnvironment;
+import org.apache.flink.tez.client.LocalTezExecutionEnvironment;
 import org.apache.flink.util.Collector;
 
 public class TransitiveClosureNaiveStep implements ProgramDescription {
@@ -38,7 +38,7 @@ public class TransitiveClosureNaiveStep implements ProgramDescription {
 		}
 
 		// set up execution environment
-		ExecutionEnvironment env = TezExecutionEnvironment.create();
+		ExecutionEnvironment env = LocalTezExecutionEnvironment.create();
 
 		DataSet<Tuple2<Long, Long>> edges = getEdgeDataSet(env);
 

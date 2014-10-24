@@ -20,10 +20,18 @@ package org.apache.flink.tez.dag;
 
 
 import org.apache.flink.compiler.CompilerException;
+import org.apache.flink.configuration.Configuration;
 import org.apache.flink.tez.runtime.DataSourceProcessor;
+import org.apache.flink.tez.runtime.DataSourceProcessorWithSplits;
 import org.apache.flink.tez.runtime.TezTaskConfig;
+import org.apache.flink.tez.runtime.input.FlinkInput;
+import org.apache.flink.tez.runtime.input.FlinkInputSplitGenerator;
 import org.apache.flink.tez.util.EncodingUtils;
+import org.apache.hadoop.security.Credentials;
 import org.apache.tez.common.TezUtils;
+import org.apache.tez.dag.api.DataSourceDescriptor;
+import org.apache.tez.dag.api.InputDescriptor;
+import org.apache.tez.dag.api.InputInitializerDescriptor;
 import org.apache.tez.dag.api.ProcessorDescriptor;
 import org.apache.tez.dag.api.TezConfiguration;
 import org.apache.tez.dag.api.Vertex;
@@ -36,8 +44,8 @@ public class FlinkDataSourceVertex extends FlinkVertex {
 		super(taskName, parallelism, taskConfig);
 	}
 
-	@Override
-	public Vertex createVertex(TezConfiguration conf) {
+
+	public Vertex createVertexOld(TezConfiguration conf) {
 		try {
 			this.writeInputPositionsToConfig();
 			this.writeSubTasksInOutputToConfig();
@@ -58,4 +66,41 @@ public class FlinkDataSourceVertex extends FlinkVertex {
 					"An error occurred while creating a Tez Vertex: " + e.getMessage(), e);
 		}
 	}
+
+    @Override
+    public Vertex createVertex (TezConfiguration conf) {
+        try {
+            this.writeInputPositionsToConfig();
+            this.writeSubTasksInOutputToConfig();
+
+            taskConfig.setDatasourceProcessorName(this.getUniqueName());
+            conf.set("io.flink.processor.taskconfig", EncodingUtils.encodeObjectToString(taskConfig));
+
+            ProcessorDescriptor descriptor = ProcessorDescriptor.create(
+                    DataSourceProcessorWithSplits.class.getName());
+
+            descriptor.setUserPayload(TezUtils.createUserPayloadFromConf(conf));
+
+            InputDescriptor inputDescriptor = InputDescriptor.create(FlinkInput.class.getName());
+
+            InputInitializerDescriptor inputInitializerDescriptor =
+                    InputInitializerDescriptor.create(FlinkInputSplitGenerator.class.getName()).setUserPayload(TezUtils.createUserPayloadFromConf(conf));
+
+            DataSourceDescriptor dataSourceDescriptor = DataSourceDescriptor.create(
+                    inputDescriptor,
+                    inputInitializerDescriptor,
+                    new Credentials()
+            );
+
+            cached = Vertex.create(this.getUniqueName(), descriptor, getParallelism());
+
+            cached.addDataSource("Input " + this.getUniqueName(), dataSourceDescriptor);
+
+            return cached;
+        }
+        catch (IOException e) {
+            throw new CompilerException(
+                    "An error occurred while creating a Tez Vertex: " + e.getMessage(), e);
+        }
+    }
 }

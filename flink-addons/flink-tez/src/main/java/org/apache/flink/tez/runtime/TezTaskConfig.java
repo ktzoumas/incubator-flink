@@ -18,6 +18,7 @@
 
 package org.apache.flink.tez.runtime;
 
+import org.apache.flink.api.common.io.InputFormat;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.runtime.jobgraph.tasks.InputSplitProvider;
 import org.apache.flink.runtime.operators.util.TaskConfig;
@@ -29,27 +30,30 @@ import java.util.HashMap;
 
 public class TezTaskConfig extends TaskConfig {
 
-	//private static final String NUMBER_SUBTASKS_IN_OUTPUT = "tez.num_subtasks_in_output";
-
 	private static final String NUMBER_SUBTASKS_IN_OUTPUTS = "tez.num_subtasks_in_output";
 
 	private static final String INPUT_SPLIT_PROVIDER = "tez.input_split_provider";
 
 	private static final String INPUT_POSITIONS = "tez.input_positions";
 
+    private static final String INPUT_FORMAT = "tez.input_format";
+
+    private static final String DATASOURCE_PROCESSOR_NAME = "tez.datasource_processor_name";
+
 	public TezTaskConfig(Configuration config) {
 		super(config);
 	}
 
-	/*
-		public void setNumberSubtasksInOutput(int numberSubtasksInOutput) {
-		this.config.setInteger(NUMBER_SUBTASKS_IN_OUTPUT, numberSubtasksInOutput);
-	}
 
-	public int getNumberSubtasksInOutput() {
-		return this.config.getInteger(NUMBER_SUBTASKS_IN_OUTPUT, -1);
-	}
-	 */
+    public void setDatasourceProcessorName(String name) {
+        if (name != null) {
+            this.config.setString(DATASOURCE_PROCESSOR_NAME, name);
+        }
+    }
+
+    public String getDatasourceProcessorName() {
+        return this.config.getString(DATASOURCE_PROCESSOR_NAME, null);
+    }
 
 	public void setNumberSubtasksInOutput(ArrayList<Integer> numberSubtasksInOutputs) {
 		try {
@@ -128,5 +132,30 @@ public class TezTaskConfig extends TaskConfig {
 		}
 		return inputPositions;
 	}
+
+    public void setInputFormat (InputFormat inputFormat) {
+        try {
+            InstantiationUtil.writeObjectToConfig(inputFormat, this.config, INPUT_FORMAT);
+        } catch (IOException e) {
+            throw new RuntimeException("Error while writing the input format object to the task configuration.");
+        }
+    }
+
+    public InputFormat getInputFormat () {
+        InputFormat inputFormat = null;
+        try {
+            inputFormat = (InputFormat) InstantiationUtil.readObjectFromConfig(this.config, INPUT_FORMAT, getClass().getClassLoader());
+        }
+        catch (IOException e) {
+            throw new RuntimeException("Error while reading the input split provider object from the task configuration.");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("Error while reading the input split provider object from the task configuration. " +
+                    "ChannelSelector class not found.");
+        }
+        if (inputFormat == null) {
+            throw new NullPointerException();
+        }
+        return inputFormat;
+    }
 
 }
