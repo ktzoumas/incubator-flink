@@ -23,45 +23,38 @@ under the License.
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
+		<artifactId>flink-addons</artifactId>
 		<groupId>org.apache.flink</groupId>
-		<artifactId>flink-streaming-parent</artifactId>
 		<version>0.7-hadoop2-incubating-SNAPSHOT</version>
-		<relativePath>..</relativePath>
+		<relativePath>../pom.hadoop2.xml/pom.xml/pom.xml</relativePath>
 	</parent>
-
-	<artifactId>flink-streaming-core</artifactId>
-	<name>flink-streaming-core</name>
+	
+	<artifactId>flink-spargel</artifactId>
+	<name>flink-spargel</name>
 
 	<packaging>jar</packaging>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.apache.sling</groupId>
-			<artifactId>org.apache.sling.commons.json</artifactId>
-			<version>2.0.6</version>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-core</artifactId>
+			<version>${project.version}</version>
 		</dependency>
-
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-math</artifactId>
-			<version>2.2</version>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-java</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-clients</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-test-utils</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>test-jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
-
 </project>

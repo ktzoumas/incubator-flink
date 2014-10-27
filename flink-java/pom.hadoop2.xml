@@ -24,30 +24,53 @@ under the License.
 
 	<parent>
 		<groupId>org.apache.flink</groupId>
-		<artifactId>flink-streaming-parent</artifactId>
+		<artifactId>flink-parent</artifactId>
 		<version>0.7-hadoop2-incubating-SNAPSHOT</version>
-		<relativePath>..</relativePath>
+		<relativePath>../pom.hadoop2.xml/pom.xml/pom.xml</relativePath>
 	</parent>
 
-	<artifactId>flink-streaming-core</artifactId>
-	<name>flink-streaming-core</name>
+	<artifactId>flink-java</artifactId>
+	<name>flink-java</name>
 
 	<packaging>jar</packaging>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.apache.sling</groupId>
-			<artifactId>org.apache.sling.commons.json</artifactId>
-			<version>2.0.6</version>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-core</artifactId>
+			<version>${project.version}</version>
 		</dependency>
-
+		
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-math</artifactId>
-			<version>2.2</version>
+			<groupId>org.apache.avro</groupId>
+			<artifactId>avro</artifactId>
+			<!-- version is derived from base module -->
+		</dependency>
+		
+		<dependency>
+			<groupId>com.esotericsoftware.kryo</groupId>
+			<artifactId>kryo</artifactId>
+			<version>2.24.0</version>
+		</dependency>
+		
+		<!--  guava needs to be in "provided" scope, to make sure it is not included into the jars by the shading -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${guava.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-core</artifactId>
+			<version>${project.version}</version>
+			<type>test-jar</type>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
+	<!-- Because flink-scala uses it in tests -->
 	<build>
 		<plugins>
 			<plugin>
@@ -63,5 +86,4 @@ under the License.
 			</plugin>
 		</plugins>
 	</build>
-
 </project>

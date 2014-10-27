@@ -27,7 +27,7 @@ under the License.
 		<artifactId>flink-addons</artifactId>
 		<groupId>org.apache.flink</groupId>
 		<version>0.7-hadoop2-incubating-SNAPSHOT</version>
-		<relativePath>..</relativePath>
+		<relativePath>../pom.hadoop2.xml/pom.xml/pom.xml</relativePath>
 	</parent>
 
 	<artifactId>flink-hadoop-compatibility</artifactId>
@@ -67,7 +67,7 @@ under the License.
 			<activation>
 				<property>
 					<!-- Please do not remove the 'hadoop1' comment. See ./tools/generate_specific_pom.sh -->
-					<!--hadoop2--><name>!hadoop.profile</name>
+					<name>!hadoop.profile</name>
 				</property>
 			</activation>
 			<dependencies>

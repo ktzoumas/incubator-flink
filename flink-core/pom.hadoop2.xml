@@ -24,27 +24,35 @@ under the License.
 
 	<parent>
 		<groupId>org.apache.flink</groupId>
-		<artifactId>flink-streaming-parent</artifactId>
+		<artifactId>flink-parent</artifactId>
 		<version>0.7-hadoop2-incubating-SNAPSHOT</version>
-		<relativePath>..</relativePath>
+		<relativePath>../pom.hadoop2.xml/pom.xml/pom.xml</relativePath>
 	</parent>
 
-	<artifactId>flink-streaming-core</artifactId>
-	<name>flink-streaming-core</name>
+	<artifactId>flink-core</artifactId>
+	<name>flink-core</name>
 
 	<packaging>jar</packaging>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.apache.sling</groupId>
-			<artifactId>org.apache.sling.commons.json</artifactId>
-			<version>2.0.6</version>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-shaded</artifactId>
+			<version>${project.version}</version>
 		</dependency>
-
+		
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-math</artifactId>
-			<version>2.2</version>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<!-- managed version -->
+		</dependency>
+		
+		<!--  guava needs to be in "provided" scope, to make sure it is not included into the jars by the shading -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${guava.version}</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 

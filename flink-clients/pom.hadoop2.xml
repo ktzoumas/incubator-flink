@@ -16,57 +16,108 @@ software distributed under the License is distributed on an
 KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
+
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	
+
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<parent>
-		<artifactId>flink-addons</artifactId>
 		<groupId>org.apache.flink</groupId>
+		<artifactId>flink-parent</artifactId>
 		<version>0.7-hadoop2-incubating-SNAPSHOT</version>
-		<relativePath>..</relativePath>
+		<relativePath>../pom.hadoop2.xml/pom.xml/pom.xml</relativePath>
 	</parent>
 
-	<artifactId>flink-avro</artifactId>
-	<name>flink-avro</name>
+	<artifactId>flink-clients</artifactId>
+	<name>flink-clients</name>
 
 	<packaging>jar</packaging>
 
 	<dependencies>
+
+		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-runtime</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-compiler</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.apache.flink</groupId>
 			<artifactId>flink-java</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
+
+		<!--  guava needs to be in "provided" scope, to make sure it is not included into the jars by the shading -->
 		<dependency>
-			<groupId>org.apache.flink</groupId>
-			<artifactId>flink-clients</artifactId>
-			<version>${project.version}</version>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${guava.version}</version>
+			<scope>provided</scope>
 		</dependency>
 		
 		<dependency>
-			<groupId>org.apache.avro</groupId>
-			<artifactId>avro</artifactId>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-server</artifactId>
 			<!-- version is derived from base module -->
 		</dependency>
-		
+
 		<dependency>
-			<groupId>org.apache.flink</groupId>
-			<artifactId>flink-test-utils</artifactId>
-			<version>${project.version}</version>
-			<scope>test</scope>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-security</artifactId>
+			<!-- version is derived from base module -->
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-servlet</artifactId>
+			<!-- version is derived from base module -->
+		</dependency>
+
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.3.1</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- commons-io is required by commons-fileupload See http://commons.apache.org/proper/commons-fileupload/dependencies.html 
+			and https://github.com/dimalabs/ozone/pull/157 -->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+			<scope>compile</scope>
 		</dependency>
 		
+		<dependency>
+			<groupId>commons-cli</groupId>
+			<artifactId>commons-cli</artifactId>
+		</dependency>
 	</dependencies>
 
+	<!-- More information on this:
+		http://stackoverflow.com/questions/1401857/using-maven-to-build-separate-jar-files-for-unit-testing-a-custom-class-loader
+	 -->
 	<build>
 		<plugins>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.4</version><!--$NO-MVN-MAN-VER$-->
 				<executions>
 					<execution>
 						<id>create-test-dependency</id>
@@ -77,7 +128,7 @@ under the License.
 						<configuration>
 							<archive>
 								<manifest>
-									<mainClass>org.apache.flink.api.avro.testjar.AvroExternalJarProgram</mainClass>
+									<mainClass>org.apache.flink.client.testjar.WordCount</mainClass>
 								</manifest>
 							</archive>
 							<finalName>maven</finalName>
@@ -89,7 +140,7 @@ under the License.
 					</execution>
 				</executions>
 			</plugin>
-			<!--Remove the AvroExternalJarProgram code from the test-classes directory since it musn't be in the
+			<!--Remove the external jar test code from the test-classes directory since it musn't be in the
 			classpath when running the tests to actually test whether the user code class loader
 			is properly used.-->
 			<plugin>
@@ -97,7 +148,7 @@ under the License.
 				<version>2.5</version><!--$NO-MVN-MAN-VER$-->
 				<executions>
 					<execution>
-						<id>remove-avroexternalprogram</id>
+						<id>remove-externaltestclasses</id>
 						<phase>process-test-classes</phase>
 						<goals>
 							<goal>clean</goal>
@@ -116,7 +167,6 @@ under the License.
 					</execution>
 				</executions>
 			</plugin>
-
 		</plugins>
 		
 		<pluginManagement>
@@ -131,15 +181,21 @@ under the License.
 							<pluginExecutions>
 								<pluginExecution>
 									<pluginExecutionFilter>
-										<groupId>org.apache.maven.plugins</groupId>
-										<artifactId>maven-assembly-plugin</artifactId>
-										<versionRange>[2.4,)</versionRange>
+										<groupId>
+											org.apache.maven.plugins
+										</groupId>
+										<artifactId>
+											maven-assembly-plugin
+										</artifactId>
+										<versionRange>
+											[2.4,)
+										</versionRange>
 										<goals>
 											<goal>single</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore/>
+										<ignore></ignore>
 									</action>
 								</pluginExecution>
 								<pluginExecution>
@@ -162,21 +218,4 @@ under the License.
 			</plugins>
 		</pluginManagement>
 	</build>
-
-	<profiles>
-		<profile>
-			<!-- A bug with java6 is causing the javadoc generation
-			to fail because the test case contains junit?
-			See https://github.com/stratosphere/stratosphere/pull/405#issuecomment-32591978
-			for further links -->
-			<id>disable-javadocs-in-java6</id>
-			<activation>
-				 <jdk>(,1.6]</jdk> <!-- disable javadocs for java6 or lower. -->
-			</activation>
-			<properties>
-				<maven.javadoc.skip>true</maven.javadoc.skip>
-			</properties>
-		</profile>
-	</profiles>
-
 </project>

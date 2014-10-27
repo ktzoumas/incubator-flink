@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!--
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
@@ -18,64 +17,63 @@ specific language governing permissions and limitations
 under the License.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>org.apache.flink</groupId>
 		<artifactId>flink-parent</artifactId>
 		<version>0.7-hadoop2-incubating-SNAPSHOT</version>
-		<relativePath>..</relativePath>
+		<relativePath>../pom.hadoop2.xml/pom.xml/pom.xml</relativePath>
 	</parent>
 
-	<artifactId>flink-shaded</artifactId>
-	<name>flink-shaded</name>
+	<artifactId>flink-quickstart</artifactId>
+	<packaging>pom</packaging>
 
-	<packaging>jar</packaging>
+	<name>flink-quickstart</name>
+	<description>Parent project for different quickstart archetypes for Apache Flink</description>
 
-	<dependencies>
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>${guava.version}</version>
-			<scope>compile</scope>
-		</dependency>
-	</dependencies>
-
+	<modules>
+		<module>flink-quickstart-java/pom.xml/pom.xml/pom.hadoop2.xml</module>
+		<module>flink-quickstart-scala/pom.xml/pom.xml/pom.hadoop2.xml</module>
+	</modules>
 	<build>
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.archetype</groupId>
+				<artifactId>archetype-packaging</artifactId>
+				<version>2.2</version>
+			</extension>
+		</extensions>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-archetype-plugin</artifactId>
+					<version>2.2</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
-			<!-- Relocate the entire Google Guava dependency into a different namespace -->
+			<plugin>
+				<artifactId>maven-archetype-plugin</artifactId>
+				<version>2.2</version><!--$NO-MVN-MAN-VER$-->
+				<configuration>
+					<skip>${skipTests}</skip>
+				</configuration>
+			</plugin>
+			
+			<!-- deactivate the shade plugin for the quickstart scripts -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
-				<version>2.3</version>
 				<executions>
 					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
+						<phase/>
 					</execution>
 				</executions>
-				<configuration>
-					<shadedArtifactAttached>false</shadedArtifactAttached>
-					<createDependencyReducedPom>true</createDependencyReducedPom>
-					<dependencyReducedPomLocation>${project.basedir}/target/dependency-reduced-pom.xml</dependencyReducedPomLocation>
-					<artifactSet>
-						<includes>
-							<include>com.google.guava:guava</include>
-						</includes>
-					</artifactSet>
-					<relocations>
-						<relocation>
-							<pattern>com.google</pattern>
-							<shadedPattern>org.apache.flink.shaded.com.google</shadedPattern>
-						</relocation>
-					</relocations>
-				</configuration>
 			</plugin>
+			
 		</plugins>
 	</build>
-
 </project>

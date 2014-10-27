@@ -26,7 +26,7 @@ under the License.
 		<groupId>org.apache.flink</groupId>
 		<artifactId>flink-streaming-parent</artifactId>
 		<version>0.7-hadoop2-incubating-SNAPSHOT</version>
-		<relativePath>..</relativePath>
+		<relativePath>../pom.hadoop2.xml/pom.xml/pom.xml</relativePath>
 	</parent>
 
 	<artifactId>flink-streaming-connectors</artifactId>

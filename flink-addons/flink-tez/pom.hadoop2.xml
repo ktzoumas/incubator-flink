@@ -27,7 +27,7 @@ under the License.
         <artifactId>flink-addons</artifactId>
         <groupId>org.apache.flink</groupId>
         <version>0.7-hadoop2-incubating-SNAPSHOT</version>
-        <relativePath>..</relativePath>
+        <relativePath>../pom.hadoop2.xml/pom.xml</relativePath>
     </parent>
 
     <artifactId>flink-tez</artifactId>
@@ -36,6 +36,7 @@ under the License.
     <packaging>jar</packaging>
 
     <dependencies>
+
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-java</artifactId>
@@ -67,12 +68,6 @@ under the License.
         </dependency>
 
         <dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-test-utils</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.apache.tez</groupId>
             <artifactId>tez-api</artifactId>
             <version>0.6.0-SNAPSHOT</version>
@@ -96,12 +91,6 @@ under the License.
             <version>0.6.0-SNAPSHOT</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-shaded</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
         <!--  guava needs to be in "provided" scope, to make sure it is not included into the jars by the shading -->
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -109,51 +98,7 @@ under the License.
             <version>11.0.2</version>
             <scope>compile</scope>
         </dependency>
+
+
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.4.1</version>
-                <configuration>
-                    <descriptors>
-                        <descriptor>src/assembly/flink-fat-jar.xml</descriptor>
-                    </descriptors>
-                    <archive>
-                        <manifestEntries>
-                            <Program-Class>${package}}.examples.ExampleDriver</Program-Class>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>assemble-all</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-
-            <!--<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>org.apache.flink.tez.examples.ExampleDriver</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>-->
-            <plugin>
-                <groupId>org.apache.rat</groupId>
-                <artifactId>apache-rat-plugin</artifactId>
-            </plugin>
-
-        </plugins>
-    </build>
 </project>

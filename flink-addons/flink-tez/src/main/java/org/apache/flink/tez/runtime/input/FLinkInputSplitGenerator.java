@@ -32,7 +32,8 @@ public class FlinkInputSplitGenerator extends InputInitializer {
         for (int i = 0; i < splits.length; i++) {
             byte [] bytes = InstantiationUtil.serializeObject(splits[i]);
             ByteBuffer buf = ByteBuffer.wrap(bytes);
-            InputDataInformationEvent event = new InputDataInformationEvent.createWithSerializedPayload(0, buf);
+            InputDataInformationEvent event = InputDataInformationEvent.createWithSerializedPayload(0, buf);
+
             events.add(event);
         }
         return events;
