@@ -76,7 +76,6 @@ public class LocalTezExecutionEnvironment extends ExecutionEnvironment{
 					System.exit(1);
 				}
 				System.out.println(jobName + " finished successfully");
-				System.exit(0);
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {

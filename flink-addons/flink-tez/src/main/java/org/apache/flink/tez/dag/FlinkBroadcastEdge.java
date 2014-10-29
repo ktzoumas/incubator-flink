@@ -27,6 +27,7 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.tez.dag.api.Edge;
 import org.apache.tez.dag.api.EdgeProperty;
 import org.apache.tez.dag.api.TezConfiguration;
+import org.apache.tez.runtime.library.conf.UnorderedKVEdgeConfig;
 
 import java.io.IOException;
 
@@ -40,7 +41,7 @@ public class FlinkBroadcastEdge extends FlinkEdge {
 	public Edge createEdge(TezConfiguration tezConf) {
 		try {
 
-			FlinkUnorderedKVEdgeConfig edgeConfig = (FlinkUnorderedKVEdgeConfig)
+            FlinkUnorderedKVEdgeConfig edgeConfig = (FlinkUnorderedKVEdgeConfig)
 					(FlinkUnorderedKVEdgeConfig
 							.newBuilder(IntWritable.class.getName(), WritableSerializationDelegate.class.getName())
 							.setFromConfiguration(tezConf)
@@ -48,11 +49,12 @@ public class FlinkBroadcastEdge extends FlinkEdge {
 							.setAdditionalConfiguration("io.flink.typeserializer", EncodingUtils.encodeObjectToString(this.typeSerializer)))
 							.done()
 							.build();
+
 			EdgeProperty property = edgeConfig.createDefaultBroadcastEdgeProperty();
 			this.cached = Edge.create(source.getVertex(), target.getVertex(), property);
 			return cached;
 
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new CompilerException(
 					"An error occurred while creating a Tez Forward Edge: " + e.getMessage(), e);
 		}

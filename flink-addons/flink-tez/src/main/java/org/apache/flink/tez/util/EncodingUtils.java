@@ -25,35 +25,55 @@ import java.io.IOException;
 
 public class EncodingUtils {
 
-	public static Object decodeObjectFromString(String encoded, ClassLoader cl) throws IOException, ClassNotFoundException {
-		if (encoded == null) {
-			return null;
-		}
-		// Using Apache Commons
-		//Base64 base = new Base64();
-		//byte [] bytes = base.decode(encoded);
+	public static Object decodeObjectFromString(String encoded, ClassLoader cl) {
 
-		byte [] bytes = Base64.decodeBase64(encoded);
+        try {
+            if (encoded == null) {
+                return null;
+            }
+            // Using Apache Commons
+            //Base64 base = new Base64();
+            //byte [] bytes = base.decode(encoded);
 
-		return InstantiationUtil.deserializeObject(bytes, cl);
+            byte[] bytes = Base64.decodeBase64(encoded);
 
-		// //byte [] bytes = BaseEncoding.base64().decode(encoded);
-		//Base64.Decoder decoder = Base64.getDecoder();
-		//byte [] bytes = decoder.decode(encoded);
-		//return InstantiationUtil.deserializeObject(bytes, cl);
+            return InstantiationUtil.deserializeObject(bytes, cl);
+
+            // //byte [] bytes = BaseEncoding.base64().decode(encoded);
+            //Base64.Decoder decoder = Base64.getDecoder();
+            //byte [] bytes = decoder.decode(encoded);
+            //return InstantiationUtil.deserializeObject(bytes, cl);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            System.exit(-1);
+            throw new RuntimeException();
+        }
+        catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            System.exit(-1);
+            throw new RuntimeException();
+        }
 	}
 
-	public static String encodeObjectToString(Object o) throws IOException {
-		byte[] bytes = InstantiationUtil.serializeObject(o);
-		// //String encoded = BaseEncoding.base64().encode(bytes);
-		//Base64.Encoder encoder = Base64.getEncoder();
-		//String encoded = encoder.encodeToString(bytes);
+	public static String encodeObjectToString(Object o) {
 
-		//Base64 base = new Base64();
-		//String encoded = base.encodeToString(bytes);
+        try {
+            byte[] bytes = InstantiationUtil.serializeObject(o);
+            // //String encoded = BaseEncoding.base64().encode(bytes);
+            //Base64.Encoder encoder = Base64.getEncoder();
+            //String encoded = encoder.encodeToString(bytes);
 
-		String encoded = Base64.encodeBase64String(bytes);
-		return encoded;
+            //Base64 base = new Base64();
+            //String encoded = base.encodeToString(bytes);
 
+            String encoded = Base64.encodeBase64String(bytes);
+            return encoded;
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            System.exit(-1);
+            throw new RuntimeException();
+        }
 	}
 }

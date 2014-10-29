@@ -19,7 +19,6 @@
 package org.apache.flink.tez.test;
 
 import org.apache.flink.api.common.JobExecutionResult;
-import org.apache.flink.api.java.ExecutionEnvironment;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.test.util.AbstractTestBase;
 import org.apache.flink.tez.client.LocalTezExecutionEnvironment;
@@ -77,11 +76,12 @@ public abstract class TezProgramTestBase extends AbstractTestBase {
 
         // prepare the test environment
         LocalTezExecutionEnvironment env = LocalTezExecutionEnvironment.create();
+        env.setDegreeOfParallelism(degreeOfParallelism);
         env.setAsContext();
 
         // call the test program
         try {
-                testProgram();
+            testProgram();
         }
         catch (Exception e) {
             System.err.println(e.getMessage());

@@ -76,6 +76,7 @@ import org.apache.tez.dag.api.client.DAGClient;
 import org.apache.tez.dag.api.client.DAGStatus;
 import org.apache.tez.runtime.api.ProcessorContext;
 import org.apache.tez.runtime.library.api.TezRuntimeConfiguration;
+import org.apache.tez.runtime.library.conf.UnorderedKVEdgeConfig;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -89,7 +90,7 @@ public class InputSplitTest {
 
     public static String INPUT_FILE="/tmp/hamlet.txt";
 
-    public static String OUTPUT_FILE="/tmp/splits7";
+    public static String OUTPUT_FILE="/tmp/splits8";
 
 
     public static StringSerializer stringSerializer = new StringSerializer();
@@ -226,7 +227,7 @@ public class InputSplitTest {
 
         Vertex dataSink = createDataSink(tezConf);
 
-        FlinkUnorderedKVEdgeConfig srcMapEdgeConf = (FlinkUnorderedKVEdgeConfig) (FlinkUnorderedKVEdgeConfig
+        UnorderedKVEdgeConfig srcMapEdgeConf = (UnorderedKVEdgeConfig) (UnorderedKVEdgeConfig
                 .newBuilder(IntWritable.class.getName(), WritableSerializationDelegate.class.getName())
                 .setFromConfiguration(tezConf)
                 .configureInput()
@@ -236,7 +237,7 @@ public class InputSplitTest {
         EdgeProperty srcMapEdgeProperty = srcMapEdgeConf.createDefaultOneToOneEdgeProperty();
         Edge edge1 = Edge.create(dataSource, tokenizer, srcMapEdgeProperty);
 
-        FlinkUnorderedKVEdgeConfig tokenizerSinkConf = (FlinkUnorderedKVEdgeConfig) (FlinkUnorderedKVEdgeConfig
+        UnorderedKVEdgeConfig tokenizerSinkConf = (UnorderedKVEdgeConfig) (UnorderedKVEdgeConfig
                 .newBuilder(IntWritable.class.getName(), WritableSerializationDelegate.class.getName())
                 .setFromConfiguration(tezConf)
                 .configureInput()

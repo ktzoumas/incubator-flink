@@ -76,7 +76,7 @@ public class TezDAGGenerator implements Visitor<PlanNode> {
 		this.tezConf = tezConf;
 	}
 
-	public DAG createDAG (OptimizedPlan program) {
+	public DAG createDAG (OptimizedPlan program) throws Exception {
 		this.vertices = new HashMap<PlanNode, FlinkVertex>();
 		this.edges = new ArrayList<FlinkEdge>();
 		program.accept(this);

@@ -97,7 +97,6 @@ public class TPCHQuery3 {
 		}
 
 		final ExecutionEnvironment env = LocalTezExecutionEnvironment.create();
-        env.setDegreeOfParallelism(4);
 
 		// get input data
 		DataSet<Lineitem> lineitems = getLineitemDataSet(env);
@@ -165,7 +164,7 @@ public class TPCHQuery3 {
 								.aggregate(Aggregations.SUM, 1);
 		
 		// emit result
-		customerWithOrders.writeAsCsv(outputPath, "\n", "|");
+		result.writeAsCsv(outputPath, "\n", "|");
 		
 		// execute program
 		env.execute("TPCH Query 3 Example");
