@@ -20,7 +20,6 @@ package org.apache.flink.tez.runtime.output;
 
 
 import org.apache.flink.api.common.typeutils.TypeSerializer;
-import org.apache.flink.tez.util.WritableSerializationDelegate;
 import org.apache.flink.util.Collector;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.tez.runtime.library.api.KeyValueWriter;
@@ -40,7 +39,7 @@ public class TezOutputCollector<T> implements Collector<T> {
 
 	private TypeSerializer<T> serializer;
 
-	WritableSerializationDelegate<T> delegate;
+	//WritableSerializationDelegate<T> delegate;
 
 	public TezOutputCollector(List<KeyValueWriter> writers, List<TezChannelSelector<T>> outputEmitters, TypeSerializer<T> serializer, List<Integer> numberOfStreamsInOutputs) {
 		this.writers = writers;
@@ -48,12 +47,12 @@ public class TezOutputCollector<T> implements Collector<T> {
 		this.numberOfStreamsInOutputs = numberOfStreamsInOutputs;
 		this.serializer = serializer;
 		this.numOutputs = writers.size();
-		this.delegate = new WritableSerializationDelegate<T>(serializer);
+		//this.delegate = new WritableSerializationDelegate<T>(serializer);
 	}
 
 	@Override
 	public void collect(T record) {
-		delegate.setInstance(record);
+		//delegate.setInstance(record);
 		for (int i = 0; i < numOutputs; i++) {
 			KeyValueWriter writer = writers.get(i);
 			TezChannelSelector<T> outputEmitter = outputEmitters.get(i);
@@ -61,7 +60,7 @@ public class TezOutputCollector<T> implements Collector<T> {
 			try {
 				for (int channel : outputEmitter.selectChannels(record, numberOfStreamsInOutput)) {
 					IntWritable key = new IntWritable(channel);
-					writer.write(key, delegate);
+					writer.write(key, record);
 				}
 			}
 			catch (IOException e) {

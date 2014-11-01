@@ -42,12 +42,9 @@ import org.apache.flink.runtime.operators.DriverStrategy;
 import org.apache.flink.runtime.operators.shipping.ShipStrategyType;
 import org.apache.flink.runtime.operators.util.LocalStrategy;
 import org.apache.flink.runtime.operators.util.TaskConfig;
-import org.apache.flink.tez.runtime.input.FlinkInput;
-import org.apache.flink.tez.runtime.input.FlinkInputSplitProvider;
 import org.apache.flink.tez.runtime.TezTaskConfig;
 import org.apache.flink.util.Visitor;
 import org.apache.tez.dag.api.DAG;
-import org.apache.tez.dag.api.InputDescriptor;
 import org.apache.tez.dag.api.TezConfiguration;
 
 import java.io.IOException;

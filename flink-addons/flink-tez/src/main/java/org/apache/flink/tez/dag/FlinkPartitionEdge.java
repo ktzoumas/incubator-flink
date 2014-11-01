@@ -22,15 +22,17 @@ package org.apache.flink.tez.dag;
 import org.apache.flink.api.common.typeutils.TypeSerializer;
 import org.apache.flink.compiler.CompilerException;
 import org.apache.flink.tez.util.EncodingUtils;
-import org.apache.flink.tez.util.WritableSerializationDelegate;
+import org.apache.flink.tez.util.FlinkSerialization;
 import org.apache.flink.tez.runtime.output.SimplePartitioner;
 import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.serializer.WritableSerialization;
 import org.apache.tez.dag.api.Edge;
 import org.apache.tez.dag.api.EdgeProperty;
 import org.apache.tez.dag.api.TezConfiguration;
 import org.apache.tez.runtime.library.conf.UnorderedPartitionedKVEdgeConfig;
 
-import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FlinkPartitionEdge extends FlinkEdge {
 
@@ -40,13 +42,17 @@ public class FlinkPartitionEdge extends FlinkEdge {
 
 	@Override
 	public Edge createEdge(TezConfiguration tezConf) {
+
+        Map<String,String> serializerMap = new HashMap<String,String>();
+        serializerMap.put("io.flink.typeserializer", EncodingUtils.encodeObjectToString(this.typeSerializer));
+
 		try {
-
-
-            FlinkUnorderedPartitionedKVEdgeConfig edgeConfig = (FlinkUnorderedPartitionedKVEdgeConfig)
-					(FlinkUnorderedPartitionedKVEdgeConfig
-						.newBuilder(IntWritable.class.getName(), WritableSerializationDelegate.class.getName(), SimplePartitioner.class.getName())
+            UnorderedPartitionedKVEdgeConfig edgeConfig =
+					(UnorderedPartitionedKVEdgeConfig
+						.newBuilder(IntWritable.class.getName(), typeSerializer.createInstance().getClass().getName(), SimplePartitioner.class.getName())
 					.setFromConfiguration(tezConf)
+                    .setKeySerializationClass(WritableSerialization.class.getName(), null)
+                    .setValueSerializationClass(FlinkSerialization.class.getName(), serializerMap)
 					.configureInput()
 					.setAdditionalConfiguration("io.flink.typeserializer", EncodingUtils.encodeObjectToString(this.typeSerializer)))
 					.done()

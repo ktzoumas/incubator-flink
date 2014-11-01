@@ -49,6 +49,6 @@ public class PageRankBasicStepITCase extends TezProgramTestBase {
 
     @Override
     protected void postSubmit() throws Exception {
-        compareKeyValuePairsWithDelta(expectedResult, resultPath, " ", 0.001);
+        compareKeyValueParisWithDelta(expectedResult, resultPath, " ", 0.001);
     }
 }

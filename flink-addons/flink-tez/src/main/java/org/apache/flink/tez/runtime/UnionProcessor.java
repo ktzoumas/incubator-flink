@@ -20,7 +20,6 @@ package org.apache.flink.tez.runtime;
 
 
 import com.google.common.base.Preconditions;
-import org.apache.flink.tez.runtime.input.FlinkUnorderedKVReader;
 import org.apache.flink.tez.util.EncodingUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.tez.common.TezUtils;
@@ -30,6 +29,7 @@ import org.apache.tez.runtime.api.Event;
 import org.apache.tez.runtime.api.LogicalInput;
 import org.apache.tez.runtime.api.LogicalOutput;
 import org.apache.tez.runtime.api.ProcessorContext;
+import org.apache.tez.runtime.library.api.KeyValueReader;
 import org.apache.tez.runtime.library.api.KeyValueWriter;
 
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ public class UnionProcessor extends AbstractLogicalIOProcessor {
 	private TezTaskConfig config;
 	protected Map<String, LogicalInput> inputs;
 	protected Map<String, LogicalOutput> outputs;
-	private List<FlinkUnorderedKVReader> readers;
+	private List<KeyValueReader> readers;
 	private List<KeyValueWriter> writers;
 	private int numInputs;
 	private int numOutputs;
@@ -76,11 +76,11 @@ public class UnionProcessor extends AbstractLogicalIOProcessor {
 		this.numInputs = inputs.size();
 		this.numOutputs = outputs.size();
 
-		this.readers = new ArrayList<FlinkUnorderedKVReader>(numInputs);
+		this.readers = new ArrayList<KeyValueReader>(numInputs);
 		if (this.inputs != null) {
 			for (LogicalInput input: this.inputs.values()) {
 				input.start();
-				readers.add((FlinkUnorderedKVReader) input.getReader());
+				readers.add((KeyValueReader) input.getReader());
 			}
 		}
 
@@ -95,10 +95,10 @@ public class UnionProcessor extends AbstractLogicalIOProcessor {
 		Preconditions.checkArgument(writers.size() == 1);
 		KeyValueWriter writer = writers.get(0);
 
-		for (FlinkUnorderedKVReader reader: this.readers) {
+		for (KeyValueReader reader: this.readers) {
 			while (reader.next()) {
 				Object key = reader.getCurrentKey();
-				Object value = reader.getCurrentRawValue();
+				Object value = reader.getCurrentValue();
 				writer.write(key, value);
 			}
 		}

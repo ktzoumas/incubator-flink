@@ -20,9 +20,7 @@ package org.apache.flink.tez.dag;
 
 
 import org.apache.flink.compiler.CompilerException;
-import org.apache.flink.configuration.Configuration;
 import org.apache.flink.tez.runtime.DataSourceProcessor;
-import org.apache.flink.tez.runtime.DataSourceProcessorWithSplits;
 import org.apache.flink.tez.runtime.TezTaskConfig;
 import org.apache.flink.tez.runtime.input.FlinkInput;
 import org.apache.flink.tez.runtime.input.FlinkInputSplitGenerator;
@@ -45,28 +43,6 @@ public class FlinkDataSourceVertex extends FlinkVertex {
 	}
 
 
-	public Vertex createVertexOld(TezConfiguration conf) {
-		try {
-			this.writeInputPositionsToConfig();
-			this.writeSubTasksInOutputToConfig();
-
-			conf.set("io.flink.processor.taskconfig", EncodingUtils.encodeObjectToString(taskConfig));
-
-			ProcessorDescriptor descriptor = ProcessorDescriptor.create(
-					DataSourceProcessor.class.getName());
-
-			descriptor.setUserPayload(TezUtils.createUserPayloadFromConf(conf));
-
-			cached = Vertex.create(this.getUniqueName(), descriptor, getParallelism());
-
-			return cached;
-		}
-		catch (IOException e) {
-			throw new CompilerException(
-					"An error occurred while creating a Tez Vertex: " + e.getMessage(), e);
-		}
-	}
-
     @Override
     public Vertex createVertex (TezConfiguration conf) {
         try {
@@ -77,7 +53,7 @@ public class FlinkDataSourceVertex extends FlinkVertex {
             conf.set("io.flink.processor.taskconfig", EncodingUtils.encodeObjectToString(taskConfig));
 
             ProcessorDescriptor descriptor = ProcessorDescriptor.create(
-                    DataSourceProcessorWithSplits.class.getName());
+                    DataSourceProcessor.class.getName());
 
             descriptor.setUserPayload(TezUtils.createUserPayloadFromConf(conf));
 

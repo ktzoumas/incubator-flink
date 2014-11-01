@@ -22,14 +22,16 @@ package org.apache.flink.tez.dag;
 import org.apache.flink.api.common.typeutils.TypeSerializer;
 import org.apache.flink.compiler.CompilerException;
 import org.apache.flink.tez.util.EncodingUtils;
-import org.apache.flink.tez.util.WritableSerializationDelegate;
+import org.apache.flink.tez.util.FlinkSerialization;
 import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.serializer.WritableSerialization;
 import org.apache.tez.dag.api.Edge;
 import org.apache.tez.dag.api.EdgeProperty;
 import org.apache.tez.dag.api.TezConfiguration;
 import org.apache.tez.runtime.library.conf.UnorderedKVEdgeConfig;
 
-import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FlinkBroadcastEdge extends FlinkEdge {
 
@@ -39,14 +41,22 @@ public class FlinkBroadcastEdge extends FlinkEdge {
 
 	@Override
 	public Edge createEdge(TezConfiguration tezConf) {
+
+        Map<String,String> serializerMap = new HashMap<String,String>();
+        serializerMap.put("io.flink.typeserializer", EncodingUtils.encodeObjectToString(this.typeSerializer));
+
+
 		try {
 
-            FlinkUnorderedKVEdgeConfig edgeConfig = (FlinkUnorderedKVEdgeConfig)
-					(FlinkUnorderedKVEdgeConfig
-							.newBuilder(IntWritable.class.getName(), WritableSerializationDelegate.class.getName())
+            UnorderedKVEdgeConfig edgeConfig =
+                    (UnorderedKVEdgeConfig
+							.newBuilder(IntWritable.class.getName(), typeSerializer.createInstance().getClass().getName())
 							.setFromConfiguration(tezConf)
+                            .setKeySerializationClass(WritableSerialization.class.getName(), null)
+                            .setValueSerializationClass(FlinkSerialization.class.getName(), serializerMap)
 							.configureInput()
-							.setAdditionalConfiguration("io.flink.typeserializer", EncodingUtils.encodeObjectToString(this.typeSerializer)))
+							.setAdditionalConfiguration("io.flink.typeserializer", EncodingUtils.encodeObjectToString(this.typeSerializer))
+                            )
 							.done()
 							.build();
 
