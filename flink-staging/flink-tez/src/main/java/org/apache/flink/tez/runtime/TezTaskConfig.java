@@ -61,7 +61,7 @@ public class TezTaskConfig extends TaskConfig {
 		try {
 			InstantiationUtil.writeObjectToConfig(numberSubtasksInOutputs, this.config, NUMBER_SUBTASKS_IN_OUTPUTS);
 		} catch (IOException e) {
-			throw new RuntimeException("Error while writing the input split provider object to the task configuration.");
+			throw new RuntimeException("Error while writing the number of subtasks list to the task configuration.");
 		}
 	}
 
@@ -98,10 +98,9 @@ public class TezTaskConfig extends TaskConfig {
 			inputSplitProvider = (InputSplitProvider) InstantiationUtil.readObjectFromConfig(this.config, INPUT_SPLIT_PROVIDER, getClass().getClassLoader());
 		}
 		catch (IOException e) {
-			throw new RuntimeException("Error while reading the input split provider object from the task configuration.");
+			throw new RuntimeException("Error while reading the input split provider object from the task configuration." + e.getStackTrace());
 		} catch (ClassNotFoundException e) {
-			throw new RuntimeException("Error while reading the input split provider object from the task configuration. " +
-					"ChannelSelector class not found.");
+			throw new RuntimeException("Error while reading the input split provider object from the task configuration. " + e.getStackTrace());
 		}
 		if (inputSplitProvider == null) {
 			throw new NullPointerException();
@@ -124,10 +123,9 @@ public class TezTaskConfig extends TaskConfig {
 			inputPositions = (HashMap) InstantiationUtil.readObjectFromConfig(this.config, INPUT_POSITIONS, getClass().getClassLoader());
 		}
 		catch (IOException e) {
-			throw new RuntimeException("Error while reading the input positions object from the task configuration.");
+			throw new RuntimeException("Error while reading the input positions object from the task configuration." + e.getStackTrace());
 		} catch (ClassNotFoundException e) {
-			throw new RuntimeException("Error while reading the input positions object from the task configuration. " +
-					"ChannelSelector class not found.");
+			throw new RuntimeException("Error while reading the input positions object from the task configuration. " + e.getStackTrace());
 		}
 		if (inputPositions == null) {
 			throw new NullPointerException();
@@ -149,10 +147,9 @@ public class TezTaskConfig extends TaskConfig {
 			inputFormat = (InputFormat) InstantiationUtil.readObjectFromConfig(this.config, INPUT_FORMAT, getClass().getClassLoader());
 		}
 		catch (IOException e) {
-			throw new RuntimeException("Error while reading the input split provider object from the task configuration.");
+			throw new RuntimeException("Error while reading the input format object from the task configuration." + e.getStackTrace());
 		} catch (ClassNotFoundException e) {
-			throw new RuntimeException("Error while reading the input split provider object from the task configuration. " +
-					"ChannelSelector class not found.");
+			throw new RuntimeException("Error while reading the input format object from the task configuration." + e.getStackTrace());
 		}
 		if (inputFormat == null) {
 			throw new NullPointerException();

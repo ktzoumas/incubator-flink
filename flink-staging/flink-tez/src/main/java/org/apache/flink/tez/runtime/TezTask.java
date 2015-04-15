@@ -22,6 +22,8 @@ import com.google.common.base.Preconditions;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.flink.api.common.ExecutionConfig;
+import org.apache.flink.api.common.accumulators.Accumulator;
+import org.apache.flink.api.common.accumulators.AccumulatorHelper;
 import org.apache.flink.api.common.distributions.DataDistribution;
 import org.apache.flink.api.common.functions.GroupCombineFunction;
 import org.apache.flink.api.common.functions.Function;
@@ -59,6 +61,7 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 
 public class TezTask<S extends Function,OT>  implements PactTaskContext<S, OT> {
@@ -556,6 +559,19 @@ public class TezTask<S extends Function,OT>  implements PactTaskContext<S, OT> {
 
 			this.output.close();
 
+			// Collect the accumulators of all involved UDFs and send them to the
+			// JobManager. close() has been called earlier for all involved UDFs
+			// (using this.stub.close() and closeChainedTasks()), so UDFs can no longer
+			// modify accumulators.
+			if (this.stub != null) {
+				// collect the counters from the stub
+				if (FunctionUtils.getFunctionRuntimeContext(this.stub, this.runtimeUdfContext) != null) {
+					Map<String, Accumulator<?, ?>> accumulators =
+							FunctionUtils.getFunctionRuntimeContext(this.stub, this.runtimeUdfContext).getAllAccumulators();
+					TezTask.reportAndClearAccumulators(accumulators);
+				}
+			}
+
 		}
 		catch (Exception ex) {
 			// close the input, but do not report any exceptions, since we already have another root cause
@@ -565,6 +581,16 @@ public class TezTask<S extends Function,OT>  implements PactTaskContext<S, OT> {
 		finally {
 			this.driver.cleanup();
 		}
+	}
+
+	protected static void reportAndClearAccumulators(Map<String, Accumulator<?, ?>> accumulators) {
+		if (accumulators.size() == 0) {
+			return;
+		}
+		
+		// Report accumulators here
+
+		AccumulatorHelper.resetAndClearAccumulators(accumulators);
 	}
 
 }
