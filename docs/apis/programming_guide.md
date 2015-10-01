@@ -1,5 +1,5 @@
 ---
-title: "Flink Programming Guide"
+title: "Flink DataSet API Programming Guide"
 ---
 <!--
 Licensed to the Apache Software Foundation (ASF) under one
@@ -22,7 +22,7 @@ under the License.
 
 <a href="#top"></a>
 
-Analysis programs in Flink are regular programs that implement transformations on data sets
+DataSet programs in Flink are regular programs that implement transformations on data sets
 (e.g., filtering, mapping, joining, grouping). The data sets are initially created from certain
 sources (e.g., by reading files, or from local collections). Results are returned via sinks, which may for
 example write the data to (distributed) files, or to standard output (for example the command line
@@ -221,7 +221,7 @@ Program Skeleton
 <div class="codetabs" markdown="1">
 <div data-lang="java" markdown="1">
 
-As we already saw in the example, Flink programs look like regular Java
+As we already saw in the example, Flink DataSet programs look like regular Java
 programs with a `main()` method. Each program consists of the same basic parts:
 
 1. Obtain an `ExecutionEnvironment`,
@@ -233,7 +233,7 @@ programs with a `main()` method. Each program consists of the same basic parts:
 We will now give an overview of each of those steps, please refer to the respective sections for
 more details. Note that all core classes of the Java API are found in the package {% gh_link /flink-java/src/main/java/org/apache/flink/api/java "org.apache.flink.api.java" %}.
 
-The `ExecutionEnvironment` is the basis for all Flink programs. You can
+The `ExecutionEnvironment` is the basis for all Flink DataSet programs. You can
 obtain one using these static methods on class `ExecutionEnvironment`:
 
 {% highlight java %}
@@ -447,18 +447,14 @@ accessed from the `getLastJobExecutionResult()` method.
 DataSet abstraction
 ---------------
 
-The batch processing APIs of Flink are centered around the `DataSet` abstraction. A `DataSet` is only
-an abstract representation of a set of data that can contain duplicates.
+A `DataSet` is an abstract representation of a finite immutable collection of data of the same type that may contain duplicates.
 
-Also note that Flink is not always physically creating (materializing) each DataSet at runtime. This 
-depends on the used runtime, the configuration and optimizer decisions.
+Note that Flink is not always physically creating (materializing) each DataSet at runtime. This
+depends on the used runtime, the configuration and optimizer decisions. DataSets may be "streamed through" 
+operations during execution, as under the hood Flink uses a streaming data processing engine.
 
-The Flink runtime does not need to always materialize the DataSets because it is using a streaming runtime model.
-
-DataSets are only materialized to avoid distributed deadlocks (at points where the data flow graph branches out and joins again later) or if the execution mode has explicitly been set to a batched execution.
-
-When using Flink on Tez, all DataSets are materialized.
-
+Some DataSets are materialized automatically to avoid distributed deadlocks (at points where the data flow graph branches
+out and joins again later) or if the execution mode has explicitly been set to blocking execution.
 
 [Back to top](#top)
 
@@ -1323,7 +1319,7 @@ data.map (new MyMapFunction());
 
 #### Anonymous classes
 
-You can pass a function as an anonmymous class:
+You can pass a function as an anonymous class:
 {% highlight java %}
 data.map(new MapFunction<String, Integer> () {
   public Integer map(String value) { return Integer.parseInt(value); }
@@ -1473,7 +1469,7 @@ Tuples are composite types that contain a fixed number of fields with various ty
 The Java API provides classes from `Tuple1` up to `Tuple25`. Every field of a tuple
 can be an arbitrary Flink type including further tuples, resulting in nested tuples. Fields of a
 tuple can be accessed directly using the field's name as `tuple.f4`, or using the generic getter method
-`tuple.getField(int position)`. The field indicies start at 0. Note that this stands in contrast
+`tuple.getField(int position)`. The field indices start at 0. Note that this stands in contrast
 to the Scala tuples, but it is more consistent with Java's general indexing.
 
 {% highlight java %}
@@ -2955,7 +2951,7 @@ public static final class Tokenizer extends RichFlatMapFunction<String, Tuple2<S
 
 [Back to top](#top)
 
-Program Packaging & Distributed Execution
+Program Packaging and Distributed Execution
 -----------------------------------------
 
 As described in the [program skeleton](#program-skeleton) section, Flink programs can be executed on
